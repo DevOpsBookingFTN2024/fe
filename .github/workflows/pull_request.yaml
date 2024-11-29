@@ -1,4 +1,4 @@
-name: booking-fe merge workflow
+name: booking-fe pr workflow
 
 env:
   REGISTRY: ghcr.io
