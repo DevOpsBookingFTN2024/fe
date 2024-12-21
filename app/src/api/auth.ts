@@ -1,12 +1,16 @@
 export const USER_KEY = "user";
 
-// export type Role = "PROFESSOR" | "STUDENT";
+export type Role = "ROLE_ADMIN" | "ROLE_HOST" | "ROLE_GUEST";
 
 export type User = {
   id: number;
-  email?: string;
   username: string;
-  // role: Role;
+  password: string;
+  emailAddress?: string;
+  firstName: string;
+  lastName: string;
+  residence: string;
+  roles: Role[];
   token: string;
   refreshToken: string;
 };
@@ -30,7 +34,8 @@ export default function getApiToken(token: string | null) {
     );
 
     return JSON.parse(jsonPayload);
-  } catch (e) {
+  } catch (e: any) {
+    console.log("Error happened: ", e);
     return null;
   }
 }

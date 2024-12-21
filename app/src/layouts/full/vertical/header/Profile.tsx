@@ -16,10 +16,27 @@ import { IconMail } from "@tabler/icons-react";
 import ProfileImg from "/src/assets/images/user-1.jpg";
 import { USER_KEY } from "@api/auth";
 import useAuthStore from "@stores/authStore";
+import accountIcon from "/src/assets/images/svgs/icon-account.svg";
+import { Link } from "react-router-dom";
+
+interface ProfileType {
+  href: string;
+  title: string;
+  subtitle: string;
+  icon: any;
+}
+const profileDropdownData: ProfileType[] = [
+  {
+    href: "/user-profile",
+    title: "My Profile",
+    subtitle: "Account settings",
+    icon: accountIcon,
+  },
+];
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
-  const { user, deleteUser } = useAuthStore((state: any) => state);
+  const { user, deleteUser } = useAuthStore();
 
   const handleClick2 = (event: any) => {
     setAnchorEl2(event.currentTarget);
@@ -37,7 +54,7 @@ const Profile = () => {
   };
 
   return (
-    <Box >
+    <Box>
       <IconButton
         size="large"
         aria-label="show_notifications"
@@ -79,11 +96,21 @@ const Profile = () => {
         <Stack direction="row" py={3} spacing={2} alignItems="center">
           <Avatar
             src={ProfileImg}
-            alt={user?.firstname}
+            alt={user?.firstName}
             sx={{ width: 95, height: 95 }}
           />
           <Box>
-            <Tooltip title={user?.email} enterDelay={500}>
+            <Typography
+              variant="subtitle2"
+              color="textPrimary"
+              fontWeight={600}
+            >
+              {`${user?.firstName} ${user?.lastName}`}
+            </Typography>
+            <Typography variant="subtitle2" color="textSecondary">
+              {user?.username}
+            </Typography>
+            <Tooltip title={user?.emailAddress} enterDelay={500}>
               <Typography
                 variant="subtitle2"
                 color="textSecondary"
@@ -93,12 +120,64 @@ const Profile = () => {
                 style={{ wordWrap: "break-word" }}
               >
                 <IconMail />
-                {user?.email}
+                {user?.emailAddress}
               </Typography>
             </Tooltip>
           </Box>
         </Stack>
         <Divider />
+        {profileDropdownData.map((profile) => (
+          <Box key={profile.title}>
+            <Box sx={{ py: 2, px: 0 }} className="hover-text-primary">
+              <Link to={profile.href}>
+                <Stack direction="row" spacing={2}>
+                  <Box
+                    width="45px"
+                    height="45px"
+                    bgcolor="primary.light"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Avatar
+                      src={profile.icon}
+                      alt={profile.icon}
+                      sx={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: 0,
+                      }}
+                    />
+                  </Box>
+                  <Box>
+                    <Typography
+                      variant="subtitle2"
+                      fontWeight={600}
+                      color="textPrimary"
+                      className="text-hover"
+                      noWrap
+                      sx={{
+                        width: "240px",
+                      }}
+                    >
+                      {profile.title}
+                    </Typography>
+                    <Typography
+                      color="textSecondary"
+                      variant="subtitle2"
+                      sx={{
+                        width: "240px",
+                      }}
+                      noWrap
+                    >
+                      {profile.subtitle}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Link>
+            </Box>
+          </Box>
+        ))}
         <Box mt={2}>
           <Button
             variant="outlined"

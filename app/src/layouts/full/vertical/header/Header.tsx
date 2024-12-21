@@ -11,6 +11,8 @@ import {
 import { IconMenu2 } from "@tabler/icons-react";
 import Profile from "./Profile";
 import { useCustomizerStore } from "@stores/customizerStore";
+import Navigation from "./Navigation";
+import Notifications from "./Notification";
 
 const Header = () => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
@@ -51,10 +53,10 @@ const Header = () => {
           <IconMenu2 size="20" />
         </IconButton>
 
-        {lgUp ? <>{/* <Navigation /> */}</> : null}
-
         <Box flexGrow={1} />
         <Stack spacing={1} direction="row" alignItems="center">
+          <Navigation />
+          <Notifications />
           <Profile />
         </Stack>
       </ToolbarStyled>
