@@ -1,9 +1,10 @@
 import useAuthStore from '@stores/authStore';
 import { useNotificationStore } from '@stores/notificationStore';
-import { Navigate, Outlet } from 'react-router-dom';
 import Notification from '@ui/Notification';
+import { Outlet } from 'react-router-dom';
 
 export default function LayoutUnauth() {
+   
   const valid = useAuthStore((state) => state.isValid);
 
   const { isOpen, data, closeNotification } = useNotificationStore();

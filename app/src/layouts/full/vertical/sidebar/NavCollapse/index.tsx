@@ -1,5 +1,5 @@
-import {useState} from "react";
-import {useLocation} from "react-router-dom";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
   ListItemIcon,
   ListItemButton,
@@ -9,8 +9,8 @@ import {
   useTheme,
 } from "@mui/material";
 import NavItem from "../NavItem";
-import {IconChevronDown, IconChevronUp} from "@tabler/icons-react";
-import {useCustomizerStore} from "@stores/customizerStore";
+import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
+import { useCustomizerStore } from "@stores/customizerStore";
 import React from "react";
 
 type NavGroupProps = {
@@ -33,24 +33,24 @@ interface NavCollapseProps {
 
 // FC Component For Dropdown Menu
 const NavCollapse = ({
-                       menu,
-                       level,
-                       pathWithoutLastPart,
-                       pathDirect,
-                       hideMenu,
-                       onClick,
-                     }: NavCollapseProps) => {
+  menu,
+  level,
+  pathWithoutLastPart,
+  pathDirect,
+  hideMenu,
+  onClick,
+}: NavCollapseProps) => {
   const customizer = useCustomizerStore();
   const Icon = menu?.icon;
   const theme = useTheme();
-  const {pathname} = useLocation();
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(true);
   const menuIcon =
-      level > 1 ? (
-          <Icon stroke={1.5} size="1rem"/>
-      ) : (
-          <Icon stroke={1.5} size="1.3rem"/>
-      );
+    level > 1 ? (
+      <Icon stroke={1.5} size="1rem" />
+    ) : (
+      <Icon stroke={1.5} size="1.3rem" />
+    );
 
   const handleClick = () => {
     setOpen(!open);
@@ -74,20 +74,20 @@ const NavCollapse = ({
     whiteSpace: "nowrap",
     "&:hover": {
       backgroundColor:
-          pathname.includes(menu.href) || open
-              ? theme.palette.primary.main
-              : theme.palette.primary.light,
+        pathname.includes(menu.href) || open
+          ? theme.palette.primary.main
+          : theme.palette.primary.light,
       color:
-          pathname.includes(menu.href) || open
-              ? "white"
-              : theme.palette.primary.main,
+        pathname.includes(menu.href) || open
+          ? "white"
+          : theme.palette.primary.main,
     },
     color:
-        open && level < 2
-            ? "white"
-            : `inherit` && level > 1 && open
-                ? theme.palette.primary.main
-                : theme.palette.text.secondary,
+      open && level < 2
+        ? "white"
+        : level > 1 && open
+        ? theme.palette.primary.main
+        : theme.palette.text.secondary,
     borderRadius: `${customizer.borderRadius}px`,
   }));
 
@@ -95,59 +95,59 @@ const NavCollapse = ({
   const submenus = menu.children?.map((item: any) => {
     if (item.children) {
       return (
-          <NavCollapse
-              key={item?.id}
-              menu={item}
-              level={level + 1}
-              pathWithoutLastPart={pathWithoutLastPart}
-              pathDirect={pathDirect}
-              hideMenu={hideMenu}
-              onClick={onClick}
-          />
+        <NavCollapse
+          key={item?.id}
+          menu={item}
+          level={level + 1}
+          pathWithoutLastPart={pathWithoutLastPart}
+          pathDirect={pathDirect}
+          hideMenu={hideMenu}
+          onClick={onClick}
+        />
       );
     } else {
       return (
-          <NavItem
-              key={item.id}
-              item={item}
-              level={level + 1}
-              pathDirect={pathDirect}
-              hideMenu={hideMenu}
-              onClick={onClick}
-          />
+        <NavItem
+          key={item.id}
+          item={item}
+          level={level + 1}
+          pathDirect={pathDirect}
+          hideMenu={hideMenu}
+          onClick={onClick}
+        />
       );
     }
   });
 
   return (
-      <>
-        <ListItemStyled
-            onClick={handleClick}
-            selected={pathWithoutLastPart === menu.href}
-            key={menu?.id}
+    <>
+      <ListItemStyled
+        onClick={handleClick}
+        selected={pathWithoutLastPart === menu.href}
+        key={menu?.id}
+      >
+        <ListItemIcon
+          sx={{
+            minWidth: "36px",
+            p: "3px 0",
+            color: "inherit",
+          }}
         >
-          <ListItemIcon
-              sx={{
-                minWidth: "36px",
-                p: "3px 0",
-                color: "inherit",
-              }}
-          >
-            {menuIcon}
-          </ListItemIcon>
-          <ListItemText color="inherit">
-            {hideMenu ? "" : <>{`${menu.title}`}</>}
-          </ListItemText>
-          {!open ? (
-              <IconChevronDown size="1rem"/>
-          ) : (
-              <IconChevronUp size="1rem"/>
-          )}
-        </ListItemStyled>
-        <Collapse in={open} timeout="auto" unmountOnExit>
-          {submenus}
-        </Collapse>
-      </>
+          {menuIcon}
+        </ListItemIcon>
+        <ListItemText color="inherit">
+          {hideMenu ? "" : <>{`${menu.title}`}</>}
+        </ListItemText>
+        {!open ? (
+          <IconChevronDown size="1rem" />
+        ) : (
+          <IconChevronUp size="1rem" />
+        )}
+      </ListItemStyled>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        {submenus}
+      </Collapse>
+    </>
   );
 };
 
