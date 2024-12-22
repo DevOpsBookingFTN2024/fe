@@ -1,18 +1,9 @@
+import { User } from "./user/user";
+
 export const USER_KEY = "user";
 
-export type Role = "ROLE_ADMIN" | "ROLE_HOST" | "ROLE_GUEST";
-
-export type User = {
-  id: number;
-  username: string;
-  password: string;
-  emailAddress?: string;
-  firstName: string;
-  lastName: string;
-  residence: string;
-  roles: Role[];
+export type LoginResponse = {
   token: string;
-  refreshToken: string;
 };
 
 export default function getApiToken(token: string | null) {

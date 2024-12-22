@@ -13,9 +13,11 @@ import Profile from "./Profile";
 import { useCustomizerStore } from "@stores/customizerStore";
 import Navigation from "./Navigation";
 import Notifications from "./Notification";
+import useAuthStore from "@stores/authStore";
 
 const Header = () => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
+  const { isValid } = useAuthStore();
 
   // drawer
   const customizer = useCustomizerStore();
@@ -57,7 +59,7 @@ const Header = () => {
         <Stack spacing={1} direction="row" alignItems="center">
           <Navigation />
           <Notifications />
-          <Profile />
+          {isValid && <Profile />}
         </Stack>
       </ToolbarStyled>
     </AppBarStyled>
