@@ -6,6 +6,9 @@ const accountSchema = z.object({
     .string({
       required_error: "Username is required.",
     })
+    .min(5, {
+      message: "Username must be atl least 5 characters long",
+    })
     .max(standardMaxLength, {
       message: `Username must not exceed ${standardMaxLength} characters.`,
     }),
@@ -16,7 +19,7 @@ const accountSchema = z.object({
     .email({
       message: "Email format is invalid.",
     }),
-  firstname: z
+  firstName: z
     .string({
       required_error: "First name is required.",
     })
@@ -26,7 +29,7 @@ const accountSchema = z.object({
     .max(standardMaxLength, {
       message: `First name must not exceed ${standardMaxLength} characters.`,
     }),
-  lastname: z
+  lastName: z
     .string({
       required_error: "Last name is required.",
     })
@@ -43,7 +46,6 @@ const accountSchema = z.object({
     .max(standardMaxLength, {
       message: `Residence must not exceed ${standardMaxLength} characters.`,
     }),
-  role: z.any(),
 });
 
 export default accountSchema;

@@ -1,6 +1,6 @@
 import { del, get, put } from "../utils";
 
-const baseUrl = new URL("users/", import.meta.env.VITE_API_URL);
+const baseUrl = new URL("users/", import.meta.env.VITE_USER_API_URL);
 
 export type Role = "ROLE_ADMIN" | "ROLE_HOST" | "ROLE_GUEST";
 
@@ -19,7 +19,7 @@ export type User = {
 
 export type InputUser = {
   username: string;
-  emailAddress?: string;
+  emailAddress: string;
   firstName: string;
   lastName: string;
   residence: string;
@@ -39,8 +39,8 @@ export function updateUser(input: InputUser) {
   return put(new URL("update", baseUrl), JSON.stringify(input));
 }
 
-export function deleteUser(id: number) {
-  return del(new URL("delete", baseUrl), id);
+export function deleteAccount() {
+  return del(new URL("delete", baseUrl));
 }
 
 export function getCurrentUser() {

@@ -4,7 +4,7 @@ import LayoutUnauth from "@layout/LayoutUnauth";
 import LoginPage from "@pages/auth/LoginPage";
 import RegisterPage from "@pages/auth/RegisterPage";
 import AccountSettingsPage from "@pages/account-settings/AccountSettingsPage";
-import AccommodationsPage from "@pages/acommodations/AccommodationsPage";
+// import AccommodationsPage from "@pages/acommodations/AccommodationsPage";
 
 const FullLayout = React.lazy(() => import("@layout/full/FullLayout"));
 const ErrorPage = React.lazy(() => import("@pages/Error/ErrorPage"));
@@ -35,12 +35,12 @@ const browserConfig = createBrowserRouter([
         element: <AccountSettingsPage />,
         errorElement: <ErrorPage />,
       },
-      {
-        id: "accommodations",
-        path: "/accommodations",
-        element: <AccommodationsPage />,
-        errorElement: <ErrorPage />,
-      },
+      // {
+      //   id: "accommodations",
+      //   path: "/accommodations",
+      //   element: <AccommodationsPage />,
+      //   errorElement: <ErrorPage />,
+      // },
       {
         id: "notFound",
         path: "*",

@@ -37,8 +37,8 @@ export default function RegisterPage() {
       theme.breakpoints.up("xl")
   );
 
-  const [value, setValue] = useState<string>("registerUser");
-  const [isConfirmMail, setIsConfirmMail] = useState(false);
+  const [value, setValue] = useState<string>("guest");
+  const [isSuccessful, setIsSuccessful] = useState(false);
 
   const [searchParams] = useSearchParams();
 
@@ -46,14 +46,11 @@ export default function RegisterPage() {
     setValue(newValue);
   };
 
-  const isSuccessful = searchParams.get("successful") ?? false;
-
   const navigate = useNavigate();
 
   let minHeight = "100vh";
 
-  if (!isSuccessful && !isConfirmMail)
-    minHeight = isSmOrLgOrXl ? "120vh" : "150vh";
+  if (!isSuccessful) minHeight = isSmOrLgOrXl ? "120vh" : "150vh";
 
   return (
     <PageContainer description="this is Register page">
@@ -91,64 +88,53 @@ export default function RegisterPage() {
             alignItems="center"
           >
             {!isSuccessful ? (
-              !isConfirmMail ? (
-                <Card
-                  elevation={9}
-                  sx={{ p: 4, zIndex: 1, width: "100%", maxWidth: "550px" }}
-                >
-                  <TabContext value={value}>
-                    <TabList
-                      centered={true}
-                      onChange={handleChange}
-                      aria-label="account-settings tabs"
-                      sx={{
-                        borderBottom: (theme) =>
-                          `1px solid ${theme.palette.divider}`,
-                      }}
-                    >
-                      <Tab
-                        value="guest"
-                        label={
-                          <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <AccountCircleOutlined />
-                            <TabName>Guest</TabName>
-                          </Box>
-                        }
-                      />
-                      <Tab
-                        value="host"
-                        label={
-                          <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <BusinessIcon />
-                            <TabName>Host</TabName>
-                          </Box>
-                        }
-                      />
-                    </TabList>
-                    <TabPanel sx={{ p: 0 }} value="guest">
-                      <RegisterUserForm role="guest" />
-                    </TabPanel>
-                    <TabPanel sx={{ p: 0 }} value="host">
-                      <RegisterUserForm role="host" />
-                    </TabPanel>
-                  </TabContext>
-                </Card>
-              ) : (
-                <Box
-                  sx={{
-                    backgroundImage:
-                      'url("/assets/backgrounds/background.png")',
-                  }}
-                  margin={"0 auto"}
-                >
-                  {/* <Banner
-                    title={t("login.checkYourEmail")}
-                    subtitle={t("login.checkYourEmailSubtitle")}
-                    goToText={t("login.goToLogin")}
-                    onGoToClick={() => navigate("/")}
-                  /> */}
-                </Box>
-              )
+              <Card
+                elevation={9}
+                sx={{ p: 4, zIndex: 1, width: "100%", maxWidth: "550px" }}
+              >
+                <TabContext value={value}>
+                  <TabList
+                    centered={true}
+                    onChange={handleChange}
+                    aria-label="account-settings tabs"
+                    sx={{
+                      borderBottom: (theme) =>
+                        `1px solid ${theme.palette.divider}`,
+                    }}
+                  >
+                    <Tab
+                      value="guest"
+                      label={
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          <AccountCircleOutlined />
+                          <TabName>Guest</TabName>
+                        </Box>
+                      }
+                    />
+                    <Tab
+                      value="host"
+                      label={
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          <BusinessIcon />
+                          <TabName>Host</TabName>
+                        </Box>
+                      }
+                    />
+                  </TabList>
+                  <TabPanel sx={{ p: 0 }} value="guest">
+                    <RegisterUserForm
+                      role="guest"
+                      setIsSuccessful={setIsSuccessful}
+                    />
+                  </TabPanel>
+                  <TabPanel sx={{ p: 0 }} value="host">
+                    <RegisterUserForm
+                      role="host"
+                      setIsSuccessful={setIsSuccessful}
+                    />
+                  </TabPanel>
+                </TabContext>
+              </Card>
             ) : (
               <Box
                 sx={{

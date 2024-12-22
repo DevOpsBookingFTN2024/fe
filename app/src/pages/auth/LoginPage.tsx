@@ -3,7 +3,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router";
 import useAuthStore from "@stores/authStore";
-import { USER_KEY } from "@api/auth";
+import { LoginResponse, USER_KEY } from "@api/auth";
 import { Box } from "@mui/system";
 import {
   Button,
@@ -21,7 +21,6 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useState } from "react";
 import CustomFormLabel from "@ui/forms/theme-elements/CustomFormLabel";
 import { useQuery } from "@tanstack/react-query";
-import { getTest } from "@api/test";
 import { User } from "@api/user/user";
 
 const standardMaxLength = import.meta.env.VITE_STANDARD_FIELD_MAX_LENGTH;
@@ -47,15 +46,6 @@ export default function LoginPage() {
     (state) => state.openNotification
   );
 
-  const { data } = useQuery({
-    queryKey: ["test"],
-    queryFn: async () => {
-      return getTest();
-    },
-  });
-
-  console.log(data);
-
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -70,7 +60,7 @@ export default function LoginPage() {
   const setUser = useAuthStore((state) => state.setUser);
 
   const loginUser = async (input: LoginInput) => {
-    const baseUrl = new URL("auth/login", import.meta.env.VITE_API_URL);
+    const baseUrl = new URL("auth/login", import.meta.env.VITE_USER_API_URL);
     const result = await fetch(baseUrl, {
       method: "POST",
       body: JSON.stringify(input),
@@ -97,11 +87,31 @@ export default function LoginPage() {
       return;
     }
 
-    const loginResponse = (await result.json()) as User;
+    const { token } = await result.json();
 
-    sessionStorage.setItem(USER_KEY, JSON.stringify(loginResponse));
-    setUser(loginResponse);
+    const currentUserUrl = new URL(import.meta.env.VITE_USER_API_URL);
+    currentUserUrl.pathname = "users/me";
+
+    const currentUserResult = await fetch(currentUserUrl.toString(), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!currentUserResult.ok) {
+      throw new Error("Failed to fetch user information.");
+    }
+
+    const currentUserResponse = (await currentUserResult.json()) as User;
+
+    // Save user data and navigate
+    currentUserResponse.token = token;
+    sessionStorage.setItem(USER_KEY, JSON.stringify(currentUserResponse));
+    setUser(currentUserResponse);
     navigate("/");
+
     return;
   };
 

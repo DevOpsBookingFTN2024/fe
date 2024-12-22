@@ -25,6 +25,9 @@ const registerSchema = z.object({
     .string({
       required_error: "Username is required.",
     })
+    .min(5, {
+      message: "Username must be atl least 5 characters long",
+    })
     .max(standardMaxLength, {
       message: `Username must not exceed ${standardMaxLength} characters.`,
     }),
@@ -73,16 +76,17 @@ const registerSchema = z.object({
     .max(standardMaxLength, {
       message: `Residence must not exceed ${standardMaxLength} characters.`,
     }),
-    role : z.any()
+  role: z.array(z.string()).nonempty("At least one role must be selected."),
 });
 
 type RegisterInput = z.infer<typeof registerSchema>;
 
 interface RegisterUserProps {
   role: string;
+  setIsSuccessful: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const RegisterUserForm = ({ role }: RegisterUserProps) => {
+const RegisterUserForm = ({ role, setIsSuccessful }: RegisterUserProps) => {
   const [loading, setLoading] = useState(false);
 
   const openNotification = useNotificationStore(
@@ -100,7 +104,7 @@ const RegisterUserForm = ({ role }: RegisterUserProps) => {
 
   const registerUser = async (input: RegisterInput) => {
     setLoading(true);
-    const baseUrl = new URL("auth/signup", import.meta.env.VITE_API_URL);
+    const baseUrl = new URL("auth/register", import.meta.env.VITE_USER_API_URL);
     const result = await fetch(baseUrl, {
       method: "POST",
       body: JSON.stringify(input),
@@ -119,6 +123,7 @@ const RegisterUserForm = ({ role }: RegisterUserProps) => {
       return;
     }
 
+    setIsSuccessful(true);
     return;
   };
 
@@ -132,7 +137,7 @@ const RegisterUserForm = ({ role }: RegisterUserProps) => {
           type="hidden"
           {...register("role", {
             required: false,
-            value: role,
+            value: [role],
           })}
         />
         <Grid container direction={"row"} spacing={1}>

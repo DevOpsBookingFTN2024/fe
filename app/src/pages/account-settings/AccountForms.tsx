@@ -1,5 +1,6 @@
 import {
   changePassword,
+  deleteAccount,
   getCurrentUser,
   InputUser,
   PasswordUpdateRequest,
@@ -25,9 +26,12 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import accountSchema from "./accountSchema";
 import passwordSchema from "./passwordSchema";
+import { useNavigate } from "react-router-dom";
+import { USER_KEY } from "@api/auth";
 
 const AccountForms = () => {
-  const { user, setUser } = useAuthStore((state) => state);
+  const { user, setUser, deleteUser } = useAuthStore((state) => state);
+  const navigate = useNavigate();
 
   const { data, refetch } = useQuery({
     queryKey: ["user", user?.id],
@@ -57,12 +61,22 @@ const AccountForms = () => {
   } = useForm<PasswordUpdateRequest>({
     resolver: zodResolver(passwordSchema),
   });
+
   const handleCancelUserProfileUpdate = () => {
     reset(user);
   };
 
   const handleCancelPasswordUpdate = () => {
     resetPasswordForm();
+  };
+
+  const handleDeleteUser = () => {
+    {
+      deleteUser();
+      localStorage.removeItem(USER_KEY);
+      sessionStorage.removeItem(USER_KEY);
+      navigate("/");
+    }
   };
 
   const userProfileMutation = useNotifiedMutation({
@@ -83,6 +97,12 @@ const AccountForms = () => {
     showSuccessNotification: true,
   });
 
+  const deleteProfileMutation = useNotifiedMutation({
+    mutationFn: deleteAccount,
+    onSuccess: handleDeleteUser,
+    showSuccessNotification: true,
+  });
+
   const submitUpdateUser = (newItem: InputUser) => {
     if (isValid) {
       setUserDetails(newItem);
@@ -98,7 +118,7 @@ const AccountForms = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} lg={6}>
+      <Grid item xs={12} lg={4}>
         <BlankCard>
           <CardContent>
             <Typography variant="h5" mb={1}>
@@ -215,7 +235,7 @@ const AccountForms = () => {
       </Grid>
 
       {/* Edit Details */}
-      <Grid item xs={12} lg={6}>
+      <Grid item xs={12} lg={8}>
         <BlankCard>
           <CardContent>
             <Typography variant="h5" mb={1}>
@@ -288,6 +308,35 @@ const AccountForms = () => {
                     sx={{
                       mt: 0,
                     }}
+                    htmlFor="emailAddress"
+                  >
+                    e-mail
+                  </CustomFormLabel>
+                  <Controller
+                    name="emailAddress"
+                    control={control}
+                    defaultValue={user?.emailAddress ?? undefined}
+                    render={({ field }) => (
+                      <CustomTextField
+                        id="emailAddress"
+                        required
+                        disabled={userProfileMutation.isPending}
+                        error={errors.emailAddress !== undefined}
+                        helperText={errors.emailAddress?.message}
+                        placeholder={"e-mail"}
+                        variant="outlined"
+                        fullWidth
+                        {...field}
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <CustomFormLabel
+                    sx={{
+                      mt: 0,
+                    }}
                     htmlFor="username"
                   >
                     Username
@@ -312,7 +361,7 @@ const AccountForms = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={12}>
                   <CustomFormLabel
                     sx={{
                       mt: 0,
@@ -391,7 +440,7 @@ const AccountForms = () => {
                 size="large"
                 variant="text"
                 color="error"
-                onClick={handleCancelUserProfileUpdate}
+                onClick={() => deleteProfileMutation.mutate(undefined)}
               >
                 Delete
               </Button>

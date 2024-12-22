@@ -2,6 +2,10 @@ import { User } from "./user/user";
 
 export const USER_KEY = "user";
 
+export type LoginResponse = {
+  token: string;
+};
+
 export default function getApiToken(token: string | null) {
   if (token === null) {
     return null;

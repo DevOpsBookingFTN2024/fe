@@ -1,4 +1,5 @@
-import getApiToken, { isTokenValid, User, USER_KEY } from "@api/auth";
+import getApiToken, { isTokenValid, USER_KEY } from "@api/auth";
+import { User } from "@api/user/user";
 import { create } from "zustand";
 
 export interface AuthStore {
