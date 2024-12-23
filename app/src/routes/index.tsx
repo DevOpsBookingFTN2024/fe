@@ -4,6 +4,11 @@ import LayoutUnauth from "@layout/LayoutUnauth";
 import LoginPage from "@pages/auth/LoginPage";
 import RegisterPage from "@pages/auth/RegisterPage";
 import AccountSettingsPage from "@pages/account-settings/AccountSettingsPage";
+import AccommodationsPage from "@pages/accommodations/AccommodationsPage";
+import MyAccommodationsList from "@ui/shared/AccommodationsList";
+import MyAccommodationsPage from "@pages/my-accommodations/MyAccommodationsPage";
+import queryClient from "../query-client";
+import { getFacilities } from "@api/accommodations/accommodations";
 // import AccommodationsPage from "@pages/acommodations/AccommodationsPage";
 
 const FullLayout = React.lazy(() => import("@layout/full/FullLayout"));
@@ -23,8 +28,19 @@ const browserConfig = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <HomePage />,
+            element: <AccommodationsPage />,
             errorElement: <ErrorPage />,
+          },
+          {
+            id: "my-accommodations",
+            path: "/my-accommodations",
+            element: <MyAccommodationsPage />,
+            errorElement: <ErrorPage />,
+            // loader: () =>
+            //   queryClient.fetchQuery({
+            //     queryKey: ["facilities"],
+            //     queryFn: () => getFacilities(),
+            //   }),
           },
         ],
       },

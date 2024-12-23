@@ -38,9 +38,9 @@ const Menuitems = () =>
     },
     {
       id: uniqueId(),
-      title: "Second",
+      title: "My accommodations",
       icon: QueryStatsIcon,
-      href: "/akoma-judgments",
+      href: "/my-accommodations",
     },
   ] as MenuitemsType[];
 

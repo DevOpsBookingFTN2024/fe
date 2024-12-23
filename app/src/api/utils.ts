@@ -44,7 +44,7 @@ export function appendFormDataFromObject(
 }
 
 export type InputFormData<T> = {
-  image?: File;
+  images?: File[];
   body?: T;
 };
 
@@ -54,7 +54,11 @@ export function postMultipart(
 ) {
   let formData = new FormData();
 
-  if (input.image) formData.append("multipartImage", input.image);
+  if (input.images) {
+    input.images.forEach((image, index) =>
+      formData.append(`multipartImages[${index}]`, image)
+    );
+  }
 
   if (input.body) formData = appendFormDataFromObject(formData, input.body);
 
@@ -69,7 +73,11 @@ export function putMultipart(
 ) {
   let formData = new FormData();
 
-  if (input.image) formData.append("multipartImage", input.image);
+  if (input.images) {
+    input.images.forEach((image, index) =>
+      formData.append(`multipartImages[${index}]`, image)
+    );
+  }
   formData = appendFormDataFromObject(formData, input.body);
   return axiosClient.put(baseUrl.toString(), formData, {
     headers: headers(undefined, ""),
