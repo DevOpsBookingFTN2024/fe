@@ -1,4 +1,8 @@
-import { Accommodation } from "@api/accommodations/accommodations";
+import {
+  Accommodation,
+  deleteAccommodation,
+  updateAccommodation,
+} from "@api/accommodations/accommodations";
 import {
   Box,
   Button,
@@ -15,9 +19,18 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { useAccommodationFilterStore } from "@stores/accommodationStore";
+import {
+  useAccommodationFilterStore,
+  useAccommodationModalStore,
+} from "@stores/accommodationStore";
 import AccommodationSearch from "../../../pages/accommodations/AccommodationSearch";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { Link } from "react-router-dom";
+import AccommodationModal from "@pages/my-accommodations/AccommodationModal";
+import { ConfirmModal } from "@ui/modal/ConfirmModal";
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import queryClient, { invalidateAllQueries } from "../../../query-client";
 
 interface Props {
   onClick: (event: React.SyntheticEvent | Event) => void;
@@ -26,10 +39,21 @@ interface Props {
 }
 
 const AccommodationsList = ({ onClick, accommodations, isEdit }: Props) => {
+  const openAccommodationModal = useAccommodationModalStore(
+    (state) => state.openModal
+  );
+
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string>();
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteAccommodation,
+    onSuccess: () => invalidateAllQueries(queryClient, 'accommodations'),
+  });
+
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"));
   const theme = useTheme();
   const { filter } = useAccommodationFilterStore();
-  console.log(filter);
   //   const { data, isError, isFetching, isLoading, refetch } = useQuery({
   //     queryKey: [
   //       "accommodations",
@@ -70,19 +94,21 @@ const AccommodationsList = ({ onClick, accommodations, isEdit }: Props) => {
       >
         {/* Image Section */}
         <Box sx={{ display: "flex", flex: 1 }}>
-          <CardMedia
-            component="img"
-            sx={{
-              width: 250,
-              height: "100%",
-              objectFit: "cover",
-              borderRadius: 2,
-            }}
-            image={
-              "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
-            }
-            alt={accommodation.name}
-          />
+          <Typography component={Link} to={`${accommodation.id}`}>
+            <CardMedia
+              component="img"
+              sx={{
+                width: 250,
+                height: "100%",
+                objectFit: "cover",
+                borderRadius: 2,
+              }}
+              image={
+                "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
+              }
+              alt={accommodation.name}
+            />
+          </Typography>
           {/* Content Section */}
           <CardContent
             sx={{ flex: 1, display: "flex", flexDirection: "column" }}
@@ -164,41 +190,50 @@ const AccommodationsList = ({ onClick, accommodations, isEdit }: Props) => {
 
             {/* Action Button */}
             <Box sx={{ mt: 3 }}>
-              <Button variant="outlined" color="primary">
-                Open
-              </Button>
+              <Link to={`${accommodation.id}`}>
+                <Button variant="outlined" color="primary">
+                  Open
+                </Button>
+              </Link>
             </Box>
           </CardContent>
         </Box>
         <Divider sx={{ marginTop: 2 }} />
-        <Box
-          p={2}
-          py={1}
-          textAlign={"center"}
-          // sx={{
-          //   backgroundColor:
-          //     theme.palette.mode === "dark"
-          //       ? "rgba(0, 0, 0, 0.05)"
-          //       : "grey.100",
-          // }}
-        >
-          <IconButton
-            onClick={() => {
-              // openProductModal(product, updateProduct, true);
-            }}
+        {isEdit && (
+          <Box
+            p={2}
+            py={1}
+            textAlign={"center"}
+            // sx={{
+            //   backgroundColor:
+            //     theme.palette.mode === "dark"
+            //       ? "rgba(0, 0, 0, 0.05)"
+            //       : "grey.100",
+            // }}
           >
-            <IconEdit size="18" color="#1C9CEA" />
-          </IconButton>
-          <IconButton
-            onClick={() => {
-              // setDeleteId(product.id);
-              // setIsDeleteOpen(true);
-            }}
-          >
-            <IconTrash size="18" color="red" />
-          </IconButton>
-        </Box>
+            <IconButton
+              onClick={() => {
+                openAccommodationModal(
+                  accommodation,
+                  updateAccommodation,
+                  true
+                );
+              }}
+            >
+              <IconEdit size="18" color="#1C9CEA" />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                setDeleteId(accommodation.id);
+                setIsDeleteOpen(true);
+              }}
+            >
+              <IconTrash size="18" color="red" />
+            </IconButton>
+          </Box>
+        )}
       </Card>
+      {/* <AccommodationModal /> */}
     </Grid>
   );
 
@@ -237,6 +272,19 @@ const AccommodationsList = ({ onClick, accommodations, isEdit }: Props) => {
           <>{renderEmptyList()}</>
         )}
       </Grid>
+      <ConfirmModal
+        title={"Delete Accommodation"}
+        content={"Are you sure you want to delete this accommodation?"}
+        Icon={IconTrash}
+        isOpen={isDeleteOpen}
+        setIsOpen={setIsDeleteOpen}
+        primaryAction={() => {
+          if (!deleteId) return;
+          deleteMutation.mutate(deleteId);
+          setDeleteId(undefined);
+          setIsDeleteOpen(false);
+        }}
+      />
     </Box>
   );
 };

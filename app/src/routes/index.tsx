@@ -1,14 +1,13 @@
-import { createBrowserRouter } from "react-router-dom";
-import React from "react";
 import LayoutUnauth from "@layout/LayoutUnauth";
+import AccommodationsPage from "@pages/accommodations/AccommodationsPage";
+import AccommodationDetailsPage from "@pages/accommodations/details/AccommodationDetailsPage";
+import AccountSettingsPage from "@pages/account-settings/AccountSettingsPage";
 import LoginPage from "@pages/auth/LoginPage";
 import RegisterPage from "@pages/auth/RegisterPage";
-import AccountSettingsPage from "@pages/account-settings/AccountSettingsPage";
-import AccommodationsPage from "@pages/accommodations/AccommodationsPage";
-import MyAccommodationsList from "@ui/shared/AccommodationsList";
+import AccommodationAvailabilityPage from "@pages/my-accommodations/availability/AccommodationAvailabilityPage";
 import MyAccommodationsPage from "@pages/my-accommodations/MyAccommodationsPage";
-import queryClient from "../query-client";
-import { getFacilities } from "@api/accommodations/accommodations";
+import React from "react";
+import { createBrowserRouter } from "react-router-dom";
 // import AccommodationsPage from "@pages/acommodations/AccommodationsPage";
 
 const FullLayout = React.lazy(() => import("@layout/full/FullLayout"));
@@ -23,7 +22,7 @@ const browserConfig = createBrowserRouter([
     element: <FullLayout />,
     children: [
       {
-        id: "dashboard",
+        id: "accommodations",
         path: "/",
         children: [
           {
@@ -32,15 +31,45 @@ const browserConfig = createBrowserRouter([
             errorElement: <ErrorPage />,
           },
           {
+            id: "accommodation_details",
+            path: ":accommodationId",
+            children: [
+              {
+                index: true,
+                element: <AccommodationDetailsPage />,
+                errorElement: <ErrorPage />,
+                // loader: productLoader,
+              },
+            ],
+          },
+          {
             id: "my-accommodations",
             path: "/my-accommodations",
-            element: <MyAccommodationsPage />,
-            errorElement: <ErrorPage />,
-            // loader: () =>
-            //   queryClient.fetchQuery({
-            //     queryKey: ["facilities"],
-            //     queryFn: () => getFacilities(),
-            //   }),
+            children: [
+              {
+                index: true,
+                element: <MyAccommodationsPage />,
+                errorElement: <ErrorPage />,
+                // loader: () =>
+                //   queryClient.fetchQuery({
+                //     queryKey: ["facilities"],
+                //     queryFn: () => getFacilities(),
+                //   }),
+              },
+
+              {
+                id: "accommodation",
+                path: ":accommodationId",
+                children: [
+                  {
+                    index: true,
+                    element: <AccommodationAvailabilityPage />,
+                    errorElement: <ErrorPage />,
+                    // loader: productLoader,
+                  },
+                ],
+              },
+            ],
           },
         ],
       },

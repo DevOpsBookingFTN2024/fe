@@ -13,7 +13,6 @@ import {
   DialogTitle,
   FormControl,
   FormHelperText,
-  Grid,
   InputLabel,
   MenuItem,
   OutlinedInput,
@@ -31,6 +30,7 @@ import {
 } from "@api/accommodations/accommodations";
 import accommodationSchema from "./schema";
 import ImageFilePicker from "@ui/shared/ImageFilePicker";
+import Grid from "@mui/material/Grid2";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -113,10 +113,17 @@ export default function AccommodationModal() {
     <Dialog open={isOpen} onClose={() => handleCloseModal(hasChanged)}>
       <DialogTitle></DialogTitle>
       <DialogContent>
-        <Box component="form" sx={{ mt: 1 }}>
-          <Grid container direction={"row"} spacing={1}>
+        <Box component="form" sx={{ flexGrow: 1 }}>
+          <input
+            type="hidden"
+            {...register("body.id", {
+              required: false,
+              value: item?.id ?? undefined,
+            })}
+          />
+          <Grid container spacing={1}>
             {/* Image Picker Component */}
-            <Grid item xs={12} sm={12}>
+            <Grid size={{ xs: 12, sm: 12 }}>
               <label htmlFor="images">Upload Images</label>
               <Controller
                 name="images"
@@ -136,14 +143,8 @@ export default function AccommodationModal() {
                 )}
               />
             </Grid>
-            <input
-              type="hidden"
-              {...register("body.id", {
-                required: false,
-                value: item?.id ?? undefined,
-              })}
-            />
-            <Grid item xs={12} sm={6}>
+
+            <Grid size={{ xs: 12, sm: 12 }}>
               <Controller
                 name="body.name"
                 control={control}
@@ -157,239 +158,248 @@ export default function AccommodationModal() {
                     error={!!errors.body?.name}
                     helperText={errors.body?.name?.message}
                     placeholder={"Name"}
-                    margin="normal"
+                    margin="dense"
                     id="name"
                     autoFocus
                     {...field}
                   />
                 )}
               />
+            </Grid>
 
-              <Grid item xs={12} sm={6}>
-                <Controller
-                  name="body.country"
-                  control={control}
-                  defaultValue={item?.country ?? undefined}
-                  render={({ field }) => (
-                    <TextField
-                      label={"Country"}
-                      fullWidth
-                      required
-                      disabled={mutation.isPending}
-                      error={!!errors.body?.country}
-                      helperText={errors.body?.country?.message}
-                      placeholder={"Country"}
-                      margin="normal"
-                      id="country"
-                      autoFocus
-                      {...field}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Controller
-                  name="body.city"
-                  control={control}
-                  defaultValue={item?.city ?? undefined}
-                  render={({ field }) => (
-                    <TextField
-                      label={"City"}
-                      fullWidth
-                      required
-                      disabled={mutation.isPending}
-                      error={!!errors.body?.city}
-                      helperText={errors.body?.city?.message}
-                      placeholder={"City"}
-                      margin="normal"
-                      id="city"
-                      autoFocus
-                      {...field}
-                    />
-                  )}
-                />
-              </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Controller
+                name="body.country"
+                control={control}
+                defaultValue={item?.country ?? undefined}
+                render={({ field }) => (
+                  <TextField
+                    sx={{ width: "100%" }}
+                    label={"Country"}
+                    required
+                    disabled={mutation.isPending}
+                    error={!!errors.body?.country}
+                    helperText={errors.body?.country?.message}
+                    placeholder={"Country"}
+                    id="country"
+                    {...field}
+                  />
+                )}
+              />
+            </Grid>
 
-              <Grid item xs={12} sm={4}>
-                <Controller
-                  name="body.address"
-                  control={control}
-                  defaultValue={item?.address ?? undefined}
-                  render={({ field }) => (
-                    <TextField
-                      label={"Address"}
-                      fullWidth
-                      required
-                      disabled={mutation.isPending}
-                      error={!!errors.body?.address}
-                      helperText={errors.body?.address?.message}
-                      placeholder={"Adddress"}
-                      margin="normal"
-                      id="address"
-                      {...field}
-                    />
-                  )}
-                />
-              </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Controller
+                name="body.city"
+                control={control}
+                defaultValue={item?.city ?? undefined}
+                render={({ field }) => (
+                  <TextField
+                    sx={{ width: "100%" }}
+                    label={"City"}
+                    required
+                    disabled={mutation.isPending}
+                    error={!!errors.body?.city}
+                    helperText={errors.body?.city?.message}
+                    placeholder={"City"}
+                    id="city"
+                    {...field}
+                  />
+                )}
+              />
+            </Grid>
 
-              <Grid item xs={12} sm={6}>
-                <Controller
-                  name="body.minimumGuests"
-                  control={control}
-                  defaultValue={item?.minimumGuests ?? undefined}
-                  render={({ field }) => (
-                    <TextField
-                      label={"Minimum guests"}
-                      fullWidth
-                      required
-                      type="number"
-                      disabled={mutation.isPending}
-                      error={!!errors.body?.minimumGuests}
-                      helperText={errors.body?.minimumGuests?.message}
-                      placeholder={"Minimum guests"}
-                      margin="normal"
-                      id="minimumGuests"
-                      {...field}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Controller
-                  name="body.maximumGuests"
-                  control={control}
-                  defaultValue={item?.minimumGuests ?? undefined}
-                  render={({ field }) => (
-                    <TextField
-                      label={"Maximum guests"}
-                      fullWidth
-                      required
-                      type="number"
-                      disabled={mutation.isPending}
-                      error={!!errors.body?.maximumGuests}
-                      helperText={errors.body?.maximumGuests?.message}
-                      placeholder={"Maximum guests"}
-                      margin="normal"
-                      id="maximumGuests"
-                      {...field}
-                    />
-                  )}
-                />
-              </Grid>
+            <Grid size={{ xs: 12, sm: 12 }}>
+              <Controller
+                name="body.address"
+                control={control}
+                defaultValue={item?.address ?? undefined}
+                render={({ field }) => (
+                  <TextField
+                    label={"Address"}
+                    fullWidth
+                    required
+                    disabled={mutation.isPending}
+                    error={!!errors.body?.address}
+                    helperText={errors.body?.address?.message}
+                    placeholder={"Adddress"}
+                    margin="dense"
+                    id="address"
+                    {...field}
+                  />
+                )}
+              />
+            </Grid>
 
-              <Grid item xs={12} sm={6}>
-                <Controller
-                  control={control}
-                  name="body.pricingStrategy"
-                  defaultValue={item?.pricingStrategy ?? undefined}
-                  render={({ field: { onChange, value } }) => (
-                    <Autocomplete
-                      onChange={(event, item) => {
-                        onChange(item);
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Controller
+                name="body.minimumGuests"
+                control={control}
+                defaultValue={item?.minimumGuests ?? undefined}
+                render={({ field }) => (
+                  <TextField
+                    label={"Minimum guests"}
+                    fullWidth
+                    required
+                    type="number"
+                    InputProps={{
+                      inputProps: { min: 1 },
+                    }}
+                    disabled={mutation.isPending}
+                    error={!!errors.body?.minimumGuests}
+                    helperText={errors.body?.minimumGuests?.message}
+                    placeholder={"Minimum guests"}
+                    margin="dense"
+                    id="minimumGuests"
+                    {...field}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Controller
+                name="body.maximumGuests"
+                control={control}
+                defaultValue={item?.minimumGuests ?? undefined}
+                render={({ field }) => (
+                  <TextField
+                    label={"Maximum guests"}
+                    fullWidth
+                    required
+                    type="number"
+                    InputProps={{
+                      inputProps: { min: 1 },
+                    }}
+                    disabled={mutation.isPending}
+                    error={!!errors.body?.maximumGuests}
+                    helperText={errors.body?.maximumGuests?.message}
+                    placeholder={"Maximum guests"}
+                    margin="dense"
+                    id="maximumGuests"
+                    {...field}
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Controller
+                control={control}
+                name="body.pricingStrategy"
+                defaultValue={item?.pricingStrategy ?? undefined}
+                render={({ field: { onChange, value } }) => (
+                  <Autocomplete
+                    onChange={(event, item) => {
+                      onChange(item);
+                    }}
+                    value={pricingStrategies.find((m) => m === value)}
+                    options={pricingStrategies}
+                    getOptionLabel={(option) => option}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label={"Pricing Strategy"}
+                        margin="dense"
+                        variant="outlined"
+                        error={errors.body?.pricingStrategy !== undefined}
+                      />
+                    )}
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Controller
+                control={control}
+                name="body.approvalStrategy"
+                defaultValue={item?.approvalStrategy ?? undefined}
+                render={({ field: { onChange, value } }) => (
+                  <Autocomplete
+                    onChange={(event, item) => {
+                      onChange(item);
+                    }}
+                    value={approvalStrategies.find((m) => m === value)}
+                    options={approvalStrategies}
+                    getOptionLabel={(option) => option}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label={"Type"}
+                        margin="dense"
+                        variant="outlined"
+                        error={errors.body?.approvalStrategy !== undefined}
+                      />
+                    )}
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Controller
+                name="body.facilityIds"
+                control={control}
+                // defaultValue={item?.categories.map((c) => c.id + "") ?? []}
+                defaultValue={item?.facilities?.map((c) => c.id) ?? []}
+                render={({ field }) => (
+                  <FormControl sx={{ minWidth: 540 }}>
+                    <InputLabel id="demo-multiple-chip-label">
+                      Categories
+                    </InputLabel>
+                    <Select
+                      labelId="demo-multiple-chip-label"
+                      id="demo-multiple-chip"
+                      multiple
+                      value={field.value}
+                      onChange={(e) => {
+                        console.log(e.target.value);
+                        field.onChange(e.target.value);
                       }}
-                      value={pricingStrategies.find((m) => m === value)}
-                      options={pricingStrategies}
-                      getOptionLabel={(option) => option}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label={"Type"}
-                          margin="normal"
-                          variant="outlined"
-                          error={errors.body?.pricingStrategy !== undefined}
-                        />
+                      input={
+                        <OutlinedInput id="select-multiple-chip" label="Chip" />
+                      }
+                      renderValue={(selected) => (
+                        <Box
+                          sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}
+                        >
+                          {selected.map((value, index) => {
+                            // Find the facility with the matching ID
+                            const facility = facilities.find(
+                              (facility) => facility.id === value
+                            );
+                            return (
+                              <Chip
+                                key={index}
+                                label={facility?.name || value}
+                              />
+                            );
+                          })}
+                        </Box>
                       )}
-                    />
-                  )}
-                />
-              </Grid>
+                      MenuProps={MenuProps}
+                    >
+                      {facilities.map((facility: Facility) => (
+                        <MenuItem
+                          key={facility.id}
+                          value={facility.id}
+                          style={{
+                            fontWeight: theme.typography.fontWeightMedium,
+                          }}
+                        >
+                          {`(${facility.id}) ${facility.name}`}
+                        </MenuItem>
+                      ))}
+                    </Select>
 
-              <Grid item xs={12} sm={6}>
-                <Controller
-                  control={control}
-                  name="body.approvalStrategy"
-                  defaultValue={item?.approvalStrategy ?? undefined}
-                  render={({ field: { onChange, value } }) => (
-                    <Autocomplete
-                      onChange={(event, item) => {
-                        onChange(item);
-                      }}
-                      value={approvalStrategies.find((m) => m === value)}
-                      options={approvalStrategies}
-                      getOptionLabel={(option) => option}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label={"Type"}
-                          margin="normal"
-                          variant="outlined"
-                          error={errors.body?.approvalStrategy !== undefined}
-                        />
-                      )}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={12}>
-                <Controller
-                  name="body.facilityIds"
-                  control={control}
-                  // defaultValue={item?.categories.map((c) => c.id + "") ?? []}
-                  defaultValue={item?.facilities?.map((c) => c.id) ?? []}
-                  render={({ field }) => (
-                    <FormControl sx={{ minWidth: 540 }}>
-                      <InputLabel id="demo-multiple-chip-label">
-                        Categories
-                      </InputLabel>
-                      <Select
-                        labelId="demo-multiple-chip-label"
-                        id="demo-multiple-chip"
-                        multiple
-                        value={field.value}
-                        onChange={(e) => {
-                          console.log(e);
-                          field.onChange(e.target.value);
-                        }}
-                        input={
-                          <OutlinedInput
-                            id="select-multiple-chip"
-                            label="Chip"
-                          />
-                        }
-                        renderValue={(selected) => (
-                          <Box
-                            sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}
-                          >
-                            {selected.map((value, index) => (
-                              <Chip key={index} label={value} />
-                            ))}
-                          </Box>
-                        )}
-                        MenuProps={MenuProps}
-                      >
-                        {facilities.map((facility: Facility) => (
-                          <MenuItem
-                            key={facility.id}
-                            value={facility.id}
-                            style={{
-                              fontWeight: theme.typography.fontWeightMedium,
-                            }}
-                          >
-                            {`(${facility.id}) ${facility.name}`}
-                          </MenuItem>
-                        ))}
-                      </Select>
-
-                      {errors.body?.facilityIds && (
-                        <FormHelperText error>
-                          {errors.body?.facilityIds.message}
-                        </FormHelperText>
-                      )}
-                    </FormControl>
-                  )}
-                />
-              </Grid>
+                    {errors.body?.facilityIds && (
+                      <FormHelperText error>
+                        {errors.body?.facilityIds.message}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              />
             </Grid>
           </Grid>
         </Box>

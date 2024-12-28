@@ -13,7 +13,7 @@ export type Facility = {
 export interface FilterAccommodation {
   country?: string;
   city?: string;
-  guestCount?: string;
+  guestCount?: number;
   startDate?: Date;
   endDate?: Date;
 }
@@ -39,6 +39,7 @@ export type Accommodation = {
   country: string;
   minimumGuests: number;
   maximumGuests: number;
+  host?: string;
   hostScore?: number;
   pricingStrategy: "PER_GUEST" | "PER_UNIT";
   approvalStrategy: "MANUAL" | "AUTOMATIC";
@@ -49,7 +50,7 @@ export function getAccommodations(): Promise<Accommodation[]> {
   return get(new URL("all", baseUrl));
 }
 
-export function getAccommodationById(id: string): Promise<Accommodation[]> {
+export function getAccommodationById(id: string): Promise<Accommodation> {
   return get(new URL(id, baseUrl));
 }
 
@@ -67,8 +68,13 @@ export function createAccommodation(input: InputFormData<InputAccommodation>) {
 //   return post(new URL("create", baseUrl), JSON.stringify(request));
 // }
 
-export function updateAccommodation(request: InputAccommodation) {
-  return put(new URL("upate/" + request.id, baseUrl), JSON.stringify(request));
+export function updateAccommodation(
+  request: InputFormData<InputAccommodation>
+) {
+  return put(
+    new URL("upate/" + request.body?.id, baseUrl),
+    JSON.stringify(request)
+  );
 }
 
 export function deleteAccommodation(id: string) {
