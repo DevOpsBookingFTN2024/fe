@@ -19,17 +19,13 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {
-  useAccommodationFilterStore,
-  useAccommodationModalStore,
-} from "@stores/accommodationStore";
-import AccommodationSearch from "../../../pages/accommodations/AccommodationSearch";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
-import AccommodationModal from "@pages/my-accommodations/AccommodationModal";
+import { useAccommodationModalStore } from "@stores/accommodationStore";
+import { IconEdit, IconSlash, IconTrash } from "@tabler/icons-react";
+import { useMutation } from "@tanstack/react-query";
 import { ConfirmModal } from "@ui/modal/ConfirmModal";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import AccommodationSearch from "../../../pages/accommodations/AccommodationSearch";
 import queryClient, { invalidateAllQueries } from "../../../query-client";
 
 interface Props {
@@ -48,29 +44,11 @@ const AccommodationsList = ({ onClick, accommodations, isEdit }: Props) => {
 
   const deleteMutation = useMutation({
     mutationFn: deleteAccommodation,
-    onSuccess: () => invalidateAllQueries(queryClient, 'accommodations'),
+    onSuccess: () => invalidateAllQueries(queryClient, "accommodations"),
   });
 
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"));
   const theme = useTheme();
-  const { filter } = useAccommodationFilterStore();
-  //   const { data, isError, isFetching, isLoading, refetch } = useQuery({
-  //     queryKey: [
-  //       "accommodations",
-  //       user?.id,
-  //       startDate,
-  //       endDate,
-  //       columnFilters,
-  //     ],
-  //     queryFn: async () => {
-  //       const pageRequest = {
-  //         page: pagination.pageIndex,
-  //         size: pagination.pageSize,
-  //       } as PageRequest;
-
-  //       return getAnalyticsPerDate(state?.userId, columnFilters, pageRequest);
-  //     },
-  //   });
 
   const renderItem = (accommodation: Accommodation, theme: Theme) => (
     <Grid
@@ -104,7 +82,10 @@ const AccommodationsList = ({ onClick, accommodations, isEdit }: Props) => {
                 borderRadius: 2,
               }}
               image={
-                "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
+                // "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
+                `${import.meta.env.VITE_ACCOMMODATIONS_API_URL}photos/${
+                  accommodation.photos[0].url
+                }`
               }
               alt={accommodation.name}
             />
@@ -144,7 +125,7 @@ const AccommodationsList = ({ onClick, accommodations, isEdit }: Props) => {
                 </Box>
               </Box>
               {/* Rating */}
-              <Box sx={{ textAlign: "center" }}>
+              <Box sx={{ textAlign: "right" }}>
                 <Typography
                   variant="subtitle1"
                   fontWeight="bold"
@@ -164,28 +145,63 @@ const AccommodationsList = ({ onClick, accommodations, isEdit }: Props) => {
             {/* Address and Distance */}
 
             {/* Location Score */}
-            <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-              <Typography
-                variant="body2"
-                fontWeight="bold"
-                color="textSecondary"
-                sx={{ mr: 1 }}
-              >
-                Host Score:
-              </Typography>
-              <Rating
-                value={accommodation.hostScore}
-                precision={0.5}
-                readOnly
-              />
-              <Typography
-                variant="body2"
-                fontWeight="bold"
-                color="primary"
-                sx={{ ml: 1 }}
-              >
-                {accommodation.hostScore}
-              </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+                <Typography
+                  variant="body2"
+                  fontWeight="bold"
+                  color="textSecondary"
+                  sx={{ mr: 1 }}
+                >
+                  Host Score:
+                </Typography>
+                <Rating
+                  value={accommodation.hostScore}
+                  precision={0.5}
+                  readOnly
+                />
+                <Typography
+                  variant="body2"
+                  fontWeight="bold"
+                  color="primary"
+                  sx={{ ml: 1 }}
+                >
+                  {accommodation.hostScore}
+                </Typography>
+              </Box>
+              <Box sx={{ textAlign: "right" }}>
+                <Typography
+                  mt={2}
+                  variant="h5"
+                  fontWeight={600}
+                  display={"flex"}
+                >
+                  $CIJENA <IconSlash />
+                  <Chip
+                    label={
+                      accommodation.pricingStrategy == "PER_GUEST"
+                        ? "Guest"
+                        : "Unit"
+                    }
+                    color="success"
+                    size="small"
+                  />
+                </Typography>
+                <Typography
+                  mt={2}
+                  variant="h5"
+                  fontWeight={600}
+                  display={"flex"}
+                >
+                  Total: $250
+                </Typography>
+              </Box>
             </Box>
 
             {/* Action Button */}
@@ -241,9 +257,9 @@ const AccommodationsList = ({ onClick, accommodations, isEdit }: Props) => {
     <Grid item xs={12} lg={12} md={12} sm={12}>
       <Box textAlign="center" mt={6}>
         {/* <img src={emptyCart} alt="cart" width="200px" /> */}
-        <Typography variant="h2">No offers</Typography>
+        <Typography variant="h2">No Accommodation</Typography>
         <Typography variant="h6" mb={3}>
-          The offer is not available
+          No accommodation found. Please try again.
         </Typography>
       </Box>
     </Grid>

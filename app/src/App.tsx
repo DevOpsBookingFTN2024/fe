@@ -10,6 +10,8 @@ import "./App.css";
 function App() {
   const theme = ThemeSettings();
 
+  console.log('')
+
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">

@@ -1,10 +1,8 @@
-import { z } from "zod";
-import { Controller, useForm } from "react-hook-form";
+import { USER_KEY } from "@api/auth";
+import { User } from "@api/user/user";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router";
-import useAuthStore from "@stores/authStore";
-import { LoginResponse, USER_KEY } from "@api/auth";
-import { Box } from "@mui/system";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import {
   Button,
   Card,
@@ -14,14 +12,15 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import PageContainer from "@ui/container/PageContainer";
+import { Box } from "@mui/system";
+import useAuthStore from "@stores/authStore";
 import { useNotificationStore } from "@stores/notificationStore";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import { useState } from "react";
+import PageContainer from "@ui/container/PageContainer";
 import CustomFormLabel from "@ui/forms/theme-elements/CustomFormLabel";
-import { useQuery } from "@tanstack/react-query";
-import { User } from "@api/user/user";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { z } from "zod";
 
 const standardMaxLength = import.meta.env.VITE_STANDARD_FIELD_MAX_LENGTH;
 
@@ -60,7 +59,10 @@ export default function LoginPage() {
   const setUser = useAuthStore((state) => state.setUser);
 
   const loginUser = async (input: LoginInput) => {
-    const baseUrl = new URL("auth/login", import.meta.env.VITE_USER_API_URL);
+    const baseUrl = new URL(
+      "auth/login",
+      new URL(import.meta.env.VITE_USER_API_URL, window.location.origin)
+    );
     const result = await fetch(baseUrl, {
       method: "POST",
       body: JSON.stringify(input),
@@ -89,10 +91,12 @@ export default function LoginPage() {
 
     const { token } = await result.json();
 
-    const currentUserUrl = new URL(import.meta.env.VITE_USER_API_URL);
-    currentUserUrl.pathname = "users/me";
+    const currentUserUrl = new URL(
+      "users/me",
+      new URL(import.meta.env.VITE_USER_API_URL, window.location.origin)
+    );
 
-    const currentUserResult = await fetch(currentUserUrl.toString(), {
+    const currentUserResult = await fetch(currentUserUrl, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -103,6 +107,8 @@ export default function LoginPage() {
     if (!currentUserResult.ok) {
       throw new Error("Failed to fetch user information.");
     }
+
+    console.log("response od logina je,", currentUserResult);
 
     const currentUserResponse = (await currentUserResult.json()) as User;
 

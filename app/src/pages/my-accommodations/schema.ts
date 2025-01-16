@@ -5,7 +5,7 @@ const standardMaxLength = import.meta.env.VITE_STANDARD_FIELD_MAX_LENGTH;
 const acceptedImageTypes = ["image/jpeg", "image/jpg", "image/png"];
 
 const accommodationSchema = z.object({
-  images: z
+  files: z
     .array(
       z
         .custom<File>()
@@ -82,13 +82,7 @@ const accommodationSchema = z.object({
       approvalStrategy: z.string({
         required_error: "Status is required.",
       }),
-      facilityIds: z.array(
-        z.coerce
-          .number({
-            required_error: "Facility ID must be a number.",
-          })
-          .optional()
-      ),
+      facilityIds: z.array(z.string().uuid()),
     })
     .refine((data) => data.maximumGuests > data.minimumGuests, {
       path: ["maximumGuests"],

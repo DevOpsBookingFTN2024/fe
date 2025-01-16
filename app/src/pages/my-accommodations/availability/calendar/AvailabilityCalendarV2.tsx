@@ -1,5 +1,6 @@
 import {
   createAvailability,
+  getAvailabilitiesByAccommodation,
   InputAvailability,
   updateAvailability,
 } from "@api/accommodations/availability";
@@ -11,6 +12,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import { Calendar, dayjsLocalizer } from "react-big-calendar";
 import "./Calendar.css";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 dayjs.extend(timezone);
 
 const djLocalizer = dayjsLocalizer(dayjs);
@@ -24,36 +27,25 @@ type EvType = {
   resource?: any;
 };
 
-const availibilities = [
-  {
-    id: "uuid1",
-    date: "2024-12-01",
-    isAvailable: true,
-    isReserved: false,
-    pricePerGuest: 50.0,
-    pricePerUnit: 100.0,
-  },
-  {
-    id: "uuid2",
-    date: "2024-12-02",
-    isAvailable: false,
-    isReserved: true,
-    pricePerGuest: 60.0,
-    pricePerUnit: 120.0,
-  },
-];
-
 const AvailabilityCalendarV2 = () => {
   const openAvailibilityModal = useAvailabilityModalStore(
     (state) => state.openModal
   );
-  const processedEvents = availibilities.map((event) => {
+
+  const { accommodationId } = useParams();
+  const { data: availabilities } = useQuery({
+    queryKey: ["availabilities"],
+    queryFn: async () => {
+      return getAvailabilitiesByAccommodation(accommodationId ?? "");
+    },
+  });
+  const processedEvents = availabilities?.map((event) => {
     const startDate = new Date(event.date);
     const endDate = new Date(event.date);
     endDate.setHours(23, 59, 59, 999); // Set end time to 23:59:59.999
 
     return {
-      title: "", // Empty title if you don't want text on the event
+      title: "",
       start: startDate,
       end: endDate,
       allDay: true,
@@ -62,14 +54,21 @@ const AvailabilityCalendarV2 = () => {
         id: event.id,
         pricePerGuest: event.pricePerGuest,
         pricePerUnit: event.pricePerUnit,
+        isAvailable: event.isAvailable,
+        isReserved: event.isReserved,
       },
     };
   });
   const handleAddAvailability = (slotInfo?: EvType) =>
     openAvailibilityModal(
-      { dateFrom: slotInfo?.start, dateTo: slotInfo?.end } as InputAvailability,
+      {
+        dateFrom: slotInfo?.start,
+        dateTo: slotInfo?.end,
+        accommodationId: accommodationId,
+      } as InputAvailability,
       createAvailability,
-      true
+      true,
+      false
     );
 
   const eventColors = (event: EvType) => ({
@@ -89,12 +88,15 @@ const AvailabilityCalendarV2 = () => {
   const editEvent = (event: any) => {
     openAvailibilityModal(
       {
+        id: event.resource.id,
+        accommodationId: accommodationId,
         dateFrom: event.start,
         dateTo: event.end,
         pricePerGuest: event.resource.pricePerGuest,
         pricePerUnit: event.resource.pricePerUnit,
       } as InputAvailability,
       updateAvailability,
+      true,
       true
     );
   };
@@ -117,19 +119,29 @@ const AvailabilityCalendarV2 = () => {
           selectable
           localizer={djLocalizer}
           events={processedEvents}
+          startAccessor="start"
+          endAccessor="end"
           defaultView="month"
           views={["month"]} // Disable hourly views by restricting to 'month'
           style={{ height: "400px" }}
           eventPropGetter={eventColors}
           onSelectEvent={(event) => editEvent(event)}
           onSelectSlot={(slotInfo: EvType) => {
-            const endDate = new Date(slotInfo.end ?? new Date());
-            endDate.setDate(endDate.getDate() - 1);
+            if (
+              slotInfo.resource &&
+              slotInfo.resource.isAvailable &&
+              !slotInfo.resource.isReserved
+            ) {
+              editEvent(slotInfo);
+            } else {
+              const endDate = new Date(slotInfo.end ?? new Date());
+              endDate.setDate(endDate.getDate() - 1);
 
-            handleAddAvailability({
-              start: slotInfo.start,
-              end: endDate,
-            });
+              handleAddAvailability({
+                start: slotInfo.start,
+                end: endDate,
+              });
+            }
           }}
           allDayAccessor={(event) => event.allDay}
         />

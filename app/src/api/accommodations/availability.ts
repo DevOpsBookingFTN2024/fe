@@ -1,20 +1,27 @@
-import { del, get, InputFormData, post, postMultipart, put } from "../utils";
+import { get, post, put } from "../utils";
 
 const baseUrl = new URL(
   "availabilities/",
-  import.meta.env.VITE_ACCOMMODATIONS_API_URL
+  new URL(import.meta.env.VITE_ACCOMMODATIONS_API_URL, window.location.origin)
 );
 
 export type Availability = {
+  id?: string;
+  date: Date;
+  isAvailable?: boolean;
+  isReserved?: boolean;
+  pricePerGuest: number;
+  pricePerUnit: number;
+};
+
+export type InputAvailability = {
+  id?: string;
+  accommodationId: string;
   dateFrom: Date;
   dateTo: Date;
   isAvailable?: boolean;
   pricePerGuest: number;
   pricePerUnit: number;
-};
-
-export type InputAvailability = Availability & {
-  accommodationId: string;
 };
 
 export function getAvailabilitiesByAccommodation(
@@ -31,8 +38,5 @@ export function createAvailability(input: InputAvailability) {
 }
 
 export function updateAvailability(input: InputAvailability) {
-  return put(
-    new URL("update/" + input.accommodationId, baseUrl),
-    JSON.stringify(input)
-  );
+  return put(new URL("update/" + input.id, baseUrl), JSON.stringify(input));
 }

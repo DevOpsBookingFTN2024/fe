@@ -62,13 +62,46 @@ export default function AccommodationModal() {
 
   //   const facilities = useLoaderData() as Facility[];
   const facilities = [
-    { id: "1", name: "Wi-Fi" },
-    { id: "2", name: "Swimming Pool" },
-    { id: "3", name: "Gym" },
-    { id: "4", name: "Fireplace" },
-    { id: "5", name: "Hot Tub" },
-    { id: "6", name: "Parking Lot" },
-    { id: "7", name: "Air Conditioning" },
+    {
+      id: "8c736793-8bb6-4195-b821-fbdece5abc6b",
+      name: "Wi-Fi",
+    },
+    {
+      id: "eb4c4bad-a94f-4e36-b3cd-d52bc726307f",
+      name: "Parking lot",
+    },
+    {
+      id: "33208e8f-c77f-42a9-8669-38fa629685c2",
+      name: "TV",
+    },
+    {
+      id: "34348434-5309-46a5-81fa-ea8b5eb09e51",
+      name: "Kitchen",
+    },
+    {
+      id: "009a96c0-5381-42ed-8cb2-a7e59476ccad",
+      name: "Air condition",
+    },
+    {
+      id: "cb50115a-7845-4e81-a3d0-99e8357573aa",
+      name: "Swimming pool",
+    },
+    {
+      id: "394772a3-4a19-4e9b-950f-2efa2e253a0f",
+      name: "Fitness center",
+    },
+    {
+      id: "1af6361b-b65d-48ca-b01a-11e4d9a07726",
+      name: "Terrace",
+    },
+    {
+      id: "b1f0acb1-5e25-4b6e-90cb-e460e5bf7807",
+      name: "Barbecue",
+    },
+    {
+      id: "caa99af1-4da7-4a6c-bbb9-a32a27fa4d37",
+      name: "Additional toilet",
+    },
   ];
 
   const {
@@ -82,10 +115,11 @@ export default function AccommodationModal() {
     resolver: zodResolver(accommodationSchema),
   });
 
-  useEffect(() => reset(), [isOpen, reset]);
+  useEffect(() => reset(), [isOpen]);
 
   const handleCloseModal = (hasChanged: boolean) => {
     if (hasChanged) {
+      invalidateAllQueries(queryClient, "my_accommodations");
       invalidateAllQueries(queryClient, "accommodations");
     }
     closeModal();
@@ -124,9 +158,9 @@ export default function AccommodationModal() {
           <Grid container spacing={1}>
             {/* Image Picker Component */}
             <Grid size={{ xs: 12, sm: 12 }}>
-              <label htmlFor="images">Upload Images</label>
+              <label htmlFor="files">Upload Images</label>
               <Controller
-                name="images"
+                name="files"
                 control={control}
                 defaultValue={undefined}
                 rules={{ required: true }}
@@ -134,10 +168,10 @@ export default function AccommodationModal() {
                   <ImageFilePicker
                     maxFiles={10}
                     control={control}
-                    fileSelectChange={(images) => setUploadedImages(images)}
+                    fileSelectChange={(files) => setUploadedImages(files)}
                     disabled={mutation.isPending}
-                    error={!!errors.images}
-                    helperText={errors.images?.message}
+                    error={!!errors.files}
+                    helperText={errors.files?.message}
                     {...field}
                   />
                 )}
@@ -260,7 +294,7 @@ export default function AccommodationModal() {
               <Controller
                 name="body.maximumGuests"
                 control={control}
-                defaultValue={item?.minimumGuests ?? undefined}
+                defaultValue={item?.maximumGuests ?? undefined}
                 render={({ field }) => (
                   <TextField
                     label={"Maximum guests"}
@@ -325,7 +359,7 @@ export default function AccommodationModal() {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label={"Type"}
+                        label={"Approval strategy"}
                         margin="dense"
                         variant="outlined"
                         error={errors.body?.approvalStrategy !== undefined}
@@ -345,7 +379,7 @@ export default function AccommodationModal() {
                 render={({ field }) => (
                   <FormControl sx={{ minWidth: 540 }}>
                     <InputLabel id="demo-multiple-chip-label">
-                      Categories
+                      Facilities
                     </InputLabel>
                     <Select
                       labelId="demo-multiple-chip-label"

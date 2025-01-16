@@ -7,11 +7,15 @@ import AccommodationsList from "../../components/ui/shared/AccommodationsList";
 import {
   Accommodation,
   createAccommodation,
+  getAccommodationsByHost,
   InputAccommodation,
 } from "@api/accommodations/accommodations";
 import { IconPlus } from "@tabler/icons-react";
 import { useAccommodationModalStore } from "@stores/accommodationStore";
 import AccommodationModal from "./AccommodationModal";
+import { useQuery } from "@tanstack/react-query";
+import useAuthStore from "@stores/authStore";
+import Spinner from "@ui/view/spinner/Spinner";
 
 const mockAccommodations: Accommodation[] = [
   {
@@ -109,6 +113,7 @@ const BCrumb = [
   },
 ];
 const MyAccommodationsPage = () => {
+  const { user } = useAuthStore();
   const openAccommodationModal = useAccommodationModalStore(
     (state) => state.openModal
   );
@@ -116,6 +121,16 @@ const MyAccommodationsPage = () => {
   const handleAddAccommodation = () =>
     openAccommodationModal({} as Accommodation, createAccommodation, true);
 
+  const {
+    data: accommodations,
+    isFetching,
+    isLoading,
+  } = useQuery({
+    queryKey: ["my_accommodations"],
+    queryFn: async () => {
+      return getAccommodationsByHost(user?.username as string);
+    },
+  });
   return (
     <PageContainer
       title="Accommodations List"
@@ -125,13 +140,17 @@ const MyAccommodationsPage = () => {
       <Breadcrumb title="My accommodations" items={BCrumb} />
       <AppCard>
         <Box p={5} flexGrow={1}>
-          <AccommodationsList
-            isEdit={true}
-            accommodations={mockAccommodations}
-            onClick={function (event: React.SyntheticEvent | Event): void {
-              throw new Error("Function not implemented.");
-            }}
-          />
+          {isLoading || isFetching ? (
+            <Spinner />
+          ) : (
+            <AccommodationsList
+              isEdit={true}
+              accommodations={accommodations ?? []}
+              onClick={function (event: React.SyntheticEvent | Event): void {
+                throw new Error("Function not implemented.");
+              }}
+            />
+          )}
           {/* onClick={() => setMobileSidebarOpen(!isMobileSidebarOpen)}
           /> */}
         </Box>

@@ -1,29 +1,18 @@
 import { Accommodation } from "@api/accommodations/accommodations";
 import {
   Box,
-  Button,
-  ButtonGroup,
   Chip,
   Divider,
-  Fab,
-  Grid,
   Rating,
   Stack,
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  IconCheck,
-  IconMinus,
-  IconPin,
-  IconPlus,
-  IconSlash,
-  IconUser,
-} from "@tabler/icons-react";
+import { IconPin, IconSlash, IconUser } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 
 export interface AccommodationDetailsProps {
-  accommodation: Accommodation;
+  accommodation?: Accommodation;
 }
 
 export default function AccommodationDetails({
@@ -63,7 +52,7 @@ export default function AccommodationDetails({
           {/* Price */}
           {/* ------------------------------------------- */}
           <Typography mt={2} variant="h4" fontWeight={600} display={"flex"}>
-            ${100} <IconSlash />
+            $CIJENA <IconSlash />
             <Chip
               label={
                 accommodation.pricingStrategy == "PER_GUEST" ? "Guest" : "Unit"

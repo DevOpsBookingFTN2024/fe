@@ -1,4 +1,7 @@
-import { Accommodation } from "@api/accommodations/accommodations";
+import {
+  Accommodation,
+  getAccommodationById,
+} from "@api/accommodations/accommodations";
 import { InputReservation } from "@api/accommodations/reservations";
 import Breadcrumb from "@layout/full/shared/breadcrumb/Breadcrumb";
 import { Button, Grid } from "@mui/material";
@@ -10,6 +13,7 @@ import { useState } from "react";
 import ConfirmReservationModal from "./ConfirmReservationModal";
 import { useAccommodationFilterStore } from "@stores/accommodationStore";
 import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 const BCrumb = [
   {
@@ -25,32 +29,32 @@ const BCrumb = [
   },
 ];
 
-const accommodation: Accommodation = {
-  id: "4",
-  name: "Lakeview Lodge",
-  address: "Lakeside Drive 3",
-  city: "Bled",
-  country: "Slovenia",
-  minimumGuests: 3,
-  maximumGuests: 10,
-  pricingStrategy: "PER_UNIT",
-  approvalStrategy: "AUTOMATIC",
-  hostScore: 4.5,
-  host: "John Doe",
-  facilities: [
-    { id: "9", name: "Wi-Fi" },
-    { id: "10", name: "Pet Friendly" },
-    { id: "11", name: "BBQ Area" },
-  ],
-};
+// const accommodation: Accommodation = {
+//   id: "4",
+//   name: "Lakeview Lodge",
+//   address: "Lakeside Drive 3",
+//   city: "Bled",
+//   country: "Slovenia",
+//   minimumGuests: 3,
+//   maximumGuests: 10,
+//   pricingStrategy: "PER_UNIT",
+//   approvalStrategy: "AUTOMATIC",
+//   hostScore: 4.5,
+//   host: "John Doe",
+//   facilities: [
+//     { id: "9", name: "Wi-Fi" },
+//     { id: "10", name: "Pet Friendly" },
+//     { id: "11", name: "BBQ Area" },
+//   ],
+// };
 
 export default function AccommodationDetailsPage() {
-  //   const { data: accommodationDetails, isLoading } = useQuery({
-  //     queryKey: ["accommodation_details", accommodationId],
-  //     queryFn: () => getAccommodationById(accommodationId ?? ""),
-  //   });
-  const { filter } = useAccommodationFilterStore();
   const { accommodationId } = useParams();
+  const { data, isLoading } = useQuery({
+    queryKey: ["accommodation_details", accommodationId],
+    queryFn: () => getAccommodationById(accommodationId ?? ""),
+  });
+  const { filter } = useAccommodationFilterStore();
   const [isCreateReservationOpen, setIsCreateReservationOpen] = useState(false);
 
   return (
@@ -90,7 +94,7 @@ export default function AccommodationDetailsPage() {
                 />
               </Grid>
               <Grid item xs={12} sm={12} lg={6}>
-                <AccommodationDetails accommodation={accommodation} />
+                <AccommodationDetails accommodation={data} />
               </Grid>
             </Grid>
           </ChildCard>
@@ -104,7 +108,7 @@ export default function AccommodationDetailsPage() {
           dateFrom: filter.startDate ?? new Date(),
           dateTo: filter.endDate ?? new Date(),
           numberOfGuests: filter.guestCount ?? 1,
-          accommodationId: accommodation.id,
+          accommodationId: data?.id,
         }}
         isOpen={isCreateReservationOpen}
         setIsOpen={setIsCreateReservationOpen}

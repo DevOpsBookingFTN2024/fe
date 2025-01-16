@@ -6,7 +6,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  TextField
+  TextField,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -25,7 +25,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 export default function AvailabilityModal() {
-  const { isOpen, item, closeModal, submitAction, shouldClose } =
+  const { isOpen, isUpdate, item, closeModal, submitAction, shouldClose } =
     useAvailabilityModalStore();
   const [hasChanged, setHasChanged] = useState(false);
 
@@ -34,7 +34,7 @@ export default function AvailabilityModal() {
     handleSubmit,
     reset,
     control,
-    // setValue,
+    setValue,
     formState: { errors, isValid },
   } = useForm<InputAvailability>({
     resolver: zodResolver(availabilitySchema),
@@ -86,9 +86,23 @@ export default function AvailabilityModal() {
         <Box component="form" sx={{ flexGrow: 1 }}>
           <input
             type="hidden"
+            {...register("id", {
+              required: false,
+              value: item?.id ?? undefined,
+            })}
+          />
+          <input
+            type="hidden"
             {...register("accommodationId", {
               required: false,
               value: item?.accommodationId ?? undefined,
+            })}
+          />
+          <input
+            type="hidden"
+            {...register("isAvailable", {
+              required: false,
+              value: true,
             })}
           />
           <Grid container spacing={1}>
@@ -210,11 +224,24 @@ export default function AvailabilityModal() {
         <Button
           onClick={() => handleCloseModal(hasChanged)}
           disabled={mutation.isPending}
-          variant="contained"
-          color="error"
+          variant="outlined"
+          color="info"
         >
           Cancel
         </Button>
+        {isUpdate && (
+          <Button
+            onClick={() => {
+              setValue("isAvailable", false);
+              handleSubmit(saveAccommodation)();
+            }}
+            disabled={mutation.isPending}
+            variant="contained"
+            color="error"
+          >
+            Delete
+          </Button>
+        )}
         <Button
           color="primary"
           variant="contained"

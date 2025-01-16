@@ -2,7 +2,7 @@ import { post } from "@api/utils";
 
 const baseUrl = new URL(
   "reservations/",
-  import.meta.env.VITE_ACCOMMODATIONS_API_URL
+  new URL(import.meta.env.VITE_ACCOMMODATIONS_API_URL, window.location.origin)
 );
 
 export type InputReservation = {

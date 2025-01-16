@@ -26,12 +26,12 @@ export default function AccommodationSearch() {
   const handleSearch = () => {
     updateFilterCountry(country);
     updateFilterCity(city);
-    updateFilterGuestCount(guestCount || "1"); // Default to 1 if empty
+    updateFilterGuestCount(guestCount.toString() || "1"); // Default to 1 if empty
     if (value[0]) updateFilterStartDate(value[0].toISOString());
     if (value[1]) updateFilterEndDate(value[1].toISOString());
   };
 
-  const isSearchDisabled = !city || !guestCount || Number(guestCount) <= 0;
+  const isSearchDisabled =  !guestCount || Number(guestCount) <= 0;
 
   return (
     <Stack spacing={2} direction="row">
