@@ -33,11 +33,11 @@ const FullLayout: FC = () => {
 
   const { isValid } = useAuthStore((state) => state);
 
-  useEffect(() => {
-    if (isOpen) {
-      setTimeout(() => closeNotification(), 3000);
-    }
-  }, [isOpen]);
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     setTimeout(() => closeNotification(), 3000);
+  //   }
+  // }, [isOpen]);
 
   // if (!isValid) {
   //   return <Navigate to={"/login"} replace={true} />;
@@ -69,7 +69,7 @@ const FullLayout: FC = () => {
 
             <Notification
               isShowing={isOpen}
-              primaryText={data.primaryText}
+              primaryText={data.primaryText??"Notification"}
               secondaryText={data.secondaryText}
               isError={data.isError}
               closeNotification={closeNotification}

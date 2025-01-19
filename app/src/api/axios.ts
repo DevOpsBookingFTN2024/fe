@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosRequestHeaders } from "axios";
-import { USER_KEY, User, getUserFromStorage } from "./auth";
+import { USER_KEY, getUserFromStorage } from "./auth";
+import { User } from "./user/user";
 const baseUrl = import.meta.env.VITE_API_URL;
 
 export const headers = (

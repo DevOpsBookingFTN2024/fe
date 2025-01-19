@@ -33,9 +33,9 @@ export function appendFormDataFromObject(
     if (value instanceof Date) {
       formData.append(key, value.toISOString());
     } else if (Array.isArray(value)) {
-      for (let i = 0; i < value.length; i++) {
-        formData.append(key, value[i]);
-      }
+      value.forEach((item) => {
+        formData.append(key, item);
+      });
     } else {
       formData.append(key, String(value));
     }
@@ -44,7 +44,7 @@ export function appendFormDataFromObject(
 }
 
 export type InputFormData<T> = {
-  image?: File;
+  files?: File[];
   body?: T;
 };
 
@@ -54,7 +54,9 @@ export function postMultipart(
 ) {
   let formData = new FormData();
 
-  if (input.image) formData.append("multipartImage", input.image);
+  if (input.files) {
+    input.files.forEach((image) => formData.append("files", image));
+  }
 
   if (input.body) formData = appendFormDataFromObject(formData, input.body);
 
@@ -69,7 +71,9 @@ export function putMultipart(
 ) {
   let formData = new FormData();
 
-  if (input.image) formData.append("multipartImage", input.image);
+  if (input.files) {
+    input.files.forEach((image) => formData.append("files", image));
+  }
   formData = appendFormDataFromObject(formData, input.body);
   return axiosClient.put(baseUrl.toString(), formData, {
     headers: headers(undefined, ""),

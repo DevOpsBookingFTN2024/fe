@@ -49,7 +49,7 @@ export function ConfirmModal({
               onClick={handleCloseModal}
               disabled={isLoading}
           >
-            {"Odustani"}
+            {"Cancel"}
           </Button>
           <Button
               color="primary"
@@ -57,7 +57,7 @@ export function ConfirmModal({
               onClick={primaryAction}
               disabled={isLoading}
           >
-            {"Potvrdi"}
+            {"Confirm"}
           </Button>
         </DialogActions>
       </Dialog>

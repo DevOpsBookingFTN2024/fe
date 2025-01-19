@@ -1,6 +1,9 @@
 import { del, get, put } from "../utils";
 
-const baseUrl = new URL("users/", import.meta.env.VITE_USER_API_URL);
+const baseUrl = new URL(
+  "users/",
+  new URL(import.meta.env.VITE_USER_API_URL, window.location.origin)
+);
 
 export type Role = "ROLE_ADMIN" | "ROLE_HOST" | "ROLE_GUEST";
 

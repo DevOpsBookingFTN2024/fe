@@ -104,7 +104,10 @@ const RegisterUserForm = ({ role, setIsSuccessful }: RegisterUserProps) => {
 
   const registerUser = async (input: RegisterInput) => {
     setLoading(true);
-    const baseUrl = new URL("auth/register", import.meta.env.VITE_USER_API_URL);
+    const baseUrl = new URL(
+      "auth/register",
+      new URL(import.meta.env.VITE_USER_API_URL, window.location.origin)
+    );
     const result = await fetch(baseUrl, {
       method: "POST",
       body: JSON.stringify(input),

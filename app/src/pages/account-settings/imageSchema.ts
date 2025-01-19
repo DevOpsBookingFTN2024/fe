@@ -1,19 +1,15 @@
-import { z } from 'zod';
-import i18n from '../../i18n';
+import { z } from "zod";
 
 const maxFileSize = import.meta.env.VITE_MAX_FILE_SIZE;
-const acceptedImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+const acceptedImageTypes = ["image/jpeg", "image/jpg", "image/png"];
 
 const imageSchema = z.object({
   image: z
     .custom<File>()
-    .refine(
-      (file) => file?.size < maxFileSize,
-      i18n.t('util.maxFileSize', { num: 5 })
-    )
+    .refine((file) => file?.size < maxFileSize, "Max file size is 5MB")
     .refine(
       (file) => acceptedImageTypes.includes(file?.type),
-      i18n.t('specialOffer.allowedFileTypes')
+      "Allowed file types are JPG, PNG"
     ),
   body: z.coerce.number(),
 });
