@@ -4,7 +4,7 @@ import { create } from "zustand";
 
 export interface AuthStore {
   isValid: boolean;
-  // permissions: string[];
+  isGuest: boolean;
   user?: User;
   setUser: (newUser: User) => void;
   deleteUser: () => void;
@@ -26,6 +26,9 @@ const useAuthStore = create<AuthStore>((set) => {
 
   return {
     isValid: isTokenValid(parsedToken),
+    isGuest: user
+      ? (JSON.parse(user) as User).roles.includes("ROLE_GUEST")
+      : false,
     user: user ? (JSON.parse(user) as User) : undefined,
     // permissions: getTokenPermissions(parsedToken),
     setUser: (newUser) => {

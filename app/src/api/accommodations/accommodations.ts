@@ -3,18 +3,9 @@ import {
   del,
   get,
   InputFormData,
-  post,
   postMultipart,
-  put,
   putMultipart,
 } from "../utils";
-
-console.log(
-  "accommodation url jeee, ",
-  import.meta.env.VITE_ACCOMMODATIONS_API_URL
-);
-console.log("user url je, ", import.meta.env.VITE_USER_API_URL);
-console.log(import.meta.env.VITE_ACCOMMODATIONS_API_URL);
 
 const baseUrl = new URL(
   "accommodations/",
@@ -53,19 +44,31 @@ export type InputAccommodation = {
 };
 
 export type Accommodation = {
-  id: string;
-  name: string;
   address: string;
+  approvalStrategy: "MANUAL" | "AUTOMATIC";
   city: string;
   country: string;
-  minimumGuests: number;
+  facilities: Facility[];
+  id: string;
   maximumGuests: number;
+  minimumGuests: number;
+  name: string;
+  photos: Photo[];
+  pricingStrategy: "PER_GUEST" | "PER_UNIT";
   host?: string;
   hostScore?: number;
-  pricingStrategy: "PER_GUEST" | "PER_UNIT";
-  approvalStrategy: "MANUAL" | "AUTOMATIC";
-  facilities: Facility[];
-  photos: Photo[];
+};
+
+export type AccommodationDTO = {
+  accommodationDTO: Accommodation;
+  pricePerGuest?: number;
+  pricePerUnit?: number;
+  priceAll: number;
+};
+
+export type SelectAccommodation = {
+  id: string;
+  name: string;
 };
 
 // export type SearchAccommodation = {
@@ -81,7 +84,7 @@ export function getAccommodations(): Promise<Accommodation[]> {
 
 export function searchAccommodations(
   filter: FilterAccommodation
-): Promise<Accommodation[]> {
+): Promise<AccommodationDTO[]> {
   return get(addListFilterParams(new URL("search", baseUrl), filter));
 }
 
@@ -91,7 +94,7 @@ export function getAccommodationById(id: string): Promise<Accommodation> {
 
 export function getAccommodationsByHost(
   host: string
-): Promise<Accommodation[]> {
+): Promise<AccommodationDTO[]> {
   return get(new URL("all/" + host, baseUrl));
 }
 
@@ -117,4 +120,8 @@ export function deleteAllAccommodationsByHost() {
 
 export function getFacilities(): Promise<Facility[]> {
   return get(new URL("facilities", baseUrl));
+}
+
+export function getSelectAccommodations(): Promise<SelectAccommodation[]> {
+  return get(new URL("allSelect", baseUrl));
 }

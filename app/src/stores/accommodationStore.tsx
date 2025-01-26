@@ -11,7 +11,7 @@ export interface AccommodationFilterState {
   filter: FilterAccommodation;
   updateFilterCountry: (country?: string) => void;
   updateFilterCity: (city?: string) => void;
-  updateFilterGuestCount: (guestCount?: string) => void;
+  updateFilterGuestCount: (guestCount?: number) => void;
   updateFilterStartDate: (startDate?: Date) => void;
   updateFilterEndDate: (endDate?: Date) => void;
   resetFilter: () => void;

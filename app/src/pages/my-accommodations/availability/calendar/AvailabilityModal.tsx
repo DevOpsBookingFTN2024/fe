@@ -172,7 +172,6 @@ export default function AvailabilityModal() {
                   <TextField
                     label={"Price per guest"}
                     fullWidth
-                    required
                     type="number"
                     InputProps={{
                       inputProps: { min: 1 },
@@ -198,7 +197,6 @@ export default function AvailabilityModal() {
                   <TextField
                     label={"Price per unit"}
                     fullWidth
-                    required
                     type="number"
                     InputProps={{
                       inputProps: { min: 1 },

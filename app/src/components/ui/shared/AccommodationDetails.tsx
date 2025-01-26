@@ -8,6 +8,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import useAuthStore from "@stores/authStore";
 import { IconPin, IconSlash, IconUser } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 
@@ -19,6 +20,9 @@ export default function AccommodationDetails({
   accommodation,
 }: AccommodationDetailsProps) {
   const theme = useTheme();
+  const { user } = useAuthStore();
+
+  console.log(user)
   return (
     <Box p={2}>
       {accommodation ? (
@@ -26,33 +30,56 @@ export default function AccommodationDetails({
           {/* ------------------------------------------- */}
           {/* Title and description */}
           {/* ------------------------------------------- */}
-          <Typography
-            variant="body1"
-            color={theme.palette.text.secondary}
-            display={"flex"}
-            gap={1}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "start",
+            }}
           >
-            <IconUser size={17} /> {accommodation.host}
-          </Typography>
-          <Typography fontWeight="600" variant="h4" mt={1}>
-            {accommodation.name}
-          </Typography>
-          <Typography
-            variant="subtitle2"
-            mt={1}
-            color={theme.palette.text.secondary}
-            display={"flex"}
-            gap={1}
-          >
-            <IconPin size={17} />
-            {accommodation.address}, {accommodation.city},{" "}
-            {accommodation.country}
-          </Typography>
+            <Box>
+              <Typography fontWeight="600" variant="h4" mt={1}>
+                {accommodation.name}
+              </Typography>
+
+              <Typography
+                variant="body1"
+                color={theme.palette.text.secondary}
+                display={"flex"}
+                gap={1}
+                mt={1}
+              >
+                <IconUser size={17} /> {accommodation.host}
+              </Typography>
+
+              <Typography
+                variant="subtitle2"
+                color={theme.palette.text.secondary}
+                display={"flex"}
+                gap={1}
+              >
+                <IconPin size={17} />
+                {accommodation.address}, {accommodation.city},{" "}
+                {accommodation.country}
+              </Typography>
+            </Box>
+            <Box sx={{ textAlign: "right" }}>
+              <Typography variant="subtitle1" fontWeight="bold" color="primary">
+                Score
+              </Typography>
+              <Typography variant="h5" color="primary">
+                {4.2}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                {5} reviews
+              </Typography>
+            </Box>
+          </Box>
           {/* ------------------------------------------- */}
           {/* Price */}
           {/* ------------------------------------------- */}
-          <Typography mt={2} variant="h4" fontWeight={600} display={"flex"}>
-            $CIJENA <IconSlash />
+          <Typography m={2} variant="h4" fontWeight={600} display={"flex"}>
+            Price <IconSlash />
             <Chip
               label={
                 accommodation.pricingStrategy == "PER_GUEST" ? "Guest" : "Unit"
@@ -64,7 +91,7 @@ export default function AccommodationDetails({
           {/* ------------------------------------------- */}
           {/* Ratings */}
           {/* ------------------------------------------- */}
-          <Stack direction={"row"} alignItems="center" gap="10px" mt={2} pb={3}>
+          {/* <Stack direction={"row"} alignItems="center" gap="10px" mt={2} pb={3}>
             <Rating
               name="simple-controlled"
               size="small"
@@ -74,7 +101,7 @@ export default function AccommodationDetails({
             <Link to="/" color="inherit">
               (236 reviews)
             </Link>
-          </Stack>
+          </Stack> */}
           <Divider />
           {/* ------------------------------------------- */}
           {/* Colors */}
@@ -89,10 +116,61 @@ export default function AccommodationDetails({
               ))}
             </Box>
           </Stack>
+          <Divider />
+
+          {user?.roles.includes("ROLE_ADMIN") && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 2,
+              }}
+            >
+              {/* Min Number of Guests */}
+              <Box sx={{ textAlign: "center", flex: 1 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                  Minimum guests:
+                </Typography>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: "bold", color: "secondary.main" }}
+                >
+                  {accommodation.minimumGuests}
+                </Typography>
+              </Box>
+
+              {/* Max Number of Guests */}
+              <Box sx={{ textAlign: "center", flex: 1 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                  Maximum guests:
+                </Typography>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: "bold", color: "secondary.main" }}
+                >
+                  12
+                </Typography>
+              </Box>
+
+              {/* Approval Strategy */}
+              <Box sx={{ textAlign: "center", flex: 1 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                  Approval strategy:
+                </Typography>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: "bold", color: "secondary.main" }}
+                >
+                  MANUAL
+                </Typography>
+              </Box>
+            </Box>
+          )}
           {/* ------------------------------------------- */}
           {/* Qty */}
           {/* ------------------------------------------- */}
-
           {/* <Divider /> */}
           {/* ------------------------------------------- */}
           {/* Buttons */}

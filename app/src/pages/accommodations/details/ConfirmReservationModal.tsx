@@ -14,7 +14,8 @@ import queryClient, { invalidateAllQueries } from "../../../query-client";
 import useNotifiedMutation from "@ui/hooks/useNotifiedMutation";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import createReservation, {
+import {
+  createReservation,
   InputReservation,
 } from "@api/accommodations/reservations";
 import { useNavigate } from "react-router-dom";
