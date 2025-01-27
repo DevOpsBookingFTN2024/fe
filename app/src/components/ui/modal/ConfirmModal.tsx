@@ -11,7 +11,7 @@ import {
 export interface ConfirmModalProps {
   title: string;
   content: string;
-  Icon: React.ElementType;
+  Icon?: React.ElementType;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   primaryAction?: () => void;
@@ -37,7 +37,7 @@ export function ConfirmModal({
       <Dialog open={isOpen} onClose={handleCloseModal}>
         <DialogTitle>
           <Stack direction={"row"} gap={2}>
-            <Icon/>
+            {Icon && <Icon />}
             <Typography variant="h4">{title}</Typography>
           </Stack>
         </DialogTitle>

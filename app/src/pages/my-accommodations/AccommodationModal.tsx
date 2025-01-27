@@ -399,7 +399,7 @@ export default function AccommodationModal() {
                         >
                           {selected.map((value, index) => {
                             // Find the facility with the matching ID
-                            const facility = facilities.find(
+                            const facility = facilities?.find(
                               (facility) => facility.id === value
                             );
                             return (
@@ -413,7 +413,7 @@ export default function AccommodationModal() {
                       )}
                       MenuProps={MenuProps}
                     >
-                      {facilities.map((facility: Facility) => (
+                      {facilities?.map((facility: Facility) => (
                         <MenuItem
                           key={facility.id}
                           value={facility.id}

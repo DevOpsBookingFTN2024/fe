@@ -108,8 +108,6 @@ export default function LoginPage() {
       throw new Error("Failed to fetch user information.");
     }
 
-    console.log("response od logina je,", currentUserResult);
-
     const currentUserResponse = (await currentUserResult.json()) as User;
 
     // Save user data and navigate

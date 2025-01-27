@@ -24,6 +24,8 @@ const BCrumb = [
 const AccommodationsPage = () => {
   const { filter } = useAccommodationFilterStore();
 
+  console.log("filter", filter);
+
   const {
     data: accommodations,
     isFetching,
@@ -35,6 +37,7 @@ const AccommodationsPage = () => {
     },
     enabled: !!filter.startDate && !!filter.endDate && !!filter.guestCount,
   });
+
   return (
     <PageContainer
       title="Accommodations List"
@@ -58,10 +61,7 @@ const AccommodationsPage = () => {
             <Spinner />
           ) : (
             <AccommodationsList
-              accommodations={accommodations ?? []}
-              onClick={function (event: React.SyntheticEvent | Event): void {
-                throw new Error("Function not implemented.");
-              }}
+              accommodations={accommodations != undefined ? accommodations : []}
             />
           )}
           {/* onClick={() => setMobileSidebarOpen(!isMobileSidebarOpen)}

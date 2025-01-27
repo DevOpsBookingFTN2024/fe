@@ -1,5 +1,5 @@
-import { uniqueId } from "lodash";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
+import { uniqueId } from "lodash";
 
 interface MenuitemsType {
   [x: string]: any;
@@ -17,7 +17,6 @@ interface MenuitemsType {
   external?: boolean;
 }
 
-import { IconBasket, IconFile } from "@tabler/icons-react";
 import DashboardCustomizeOutlinedIcon from "@mui/icons-material/DashboardCustomizeOutlined";
 
 const Menuitems = () =>
@@ -41,6 +40,12 @@ const Menuitems = () =>
       title: "My accommodations",
       icon: QueryStatsIcon,
       href: "/my-accommodations",
+    },
+    {
+      id: uniqueId(),
+      title: "Reservations",
+      icon: QueryStatsIcon,
+      href: "/reservations",
     },
   ] as MenuitemsType[];
 

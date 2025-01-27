@@ -1,6 +1,6 @@
-import {useNotificationStore} from "@stores/notificationStore";
-import {useMutation} from "@tanstack/react-query";
-import {AxiosError, AxiosResponse} from "axios";
+import { useNotificationStore } from "@stores/notificationStore";
+import { useMutation } from "@tanstack/react-query";
+import { AxiosError, AxiosResponse } from "axios";
 
 export type ErrorMessage = {
   message: string;
@@ -14,10 +14,10 @@ export interface NotifiedMutationOptions<T> {
 }
 
 export default function useNotifiedMutation<T>(
-    options: NotifiedMutationOptions<T>
+  options: NotifiedMutationOptions<T>
 ) {
   const openNotification = useNotificationStore(
-      (state) => state.openNotification
+    (state) => state.openNotification
   );
 
   const {
@@ -40,7 +40,7 @@ export default function useNotifiedMutation<T>(
 
         openNotification({
           isError: true,
-          primaryText: "Desila se greška",
+          primaryText: "An error occurred",
           secondaryText: message.message,
         });
 
@@ -50,8 +50,8 @@ export default function useNotifiedMutation<T>(
       if (showSuccessMutation) {
         openNotification({
           isError: false,
-          primaryText: "Uspešna operacija",
-          secondaryText: "Akcija je uspešno izvršena",
+          primaryText: "Successfull action",
+          secondaryText: "Action was successfull",
         });
       }
 
@@ -60,10 +60,11 @@ export default function useNotifiedMutation<T>(
       }
     },
     onError: (error: AxiosError) => {
+      console.error(error);
       openNotification({
         isError: true,
-        primaryText: "Desila se greška",
-        secondaryText: error.response?.data as string,
+        primaryText: "An error occurred",
+        secondaryText: (error.response?.data as ErrorMessage)?.message,
       });
     },
   });

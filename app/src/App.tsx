@@ -2,15 +2,13 @@ import { ThemeSettings } from "./theme/Theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { RouterProvider } from "react-router-dom";
 import router from "./routes";
-import { LocalizationProvider } from '@mui/x-date-pickers-pro/LocalizationProvider';
+import { LocalizationProvider } from "@mui/x-date-pickers-pro/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import "dayjs/locale/de";
 import "./App.css";
 
 function App() {
   const theme = ThemeSettings();
-
-  console.log('')
 
   return (
     <ThemeProvider theme={theme}>
