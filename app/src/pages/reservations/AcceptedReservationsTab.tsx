@@ -1,15 +1,15 @@
+import { SelectAccommodation } from "@api/accommodations/accommodations";
 import {
   cancelReservation,
   getAcceptedReservations,
 } from "@api/accommodations/reservations";
-import { useAcceptedReservationFilterStore } from "@stores/reservationsStore";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import ReservationsList from "./ReservationsList";
-import Spinner from "@ui/view/spinner/Spinner";
 import { Autocomplete, Box, TextField } from "@mui/material";
-import { SelectAccommodation } from "@api/accommodations/accommodations";
-import { reservations } from "./ReservationsPage";
+import { useAcceptedReservationFilterStore } from "@stores/reservationsStore";
+import { useQuery } from "@tanstack/react-query";
+import Spinner from "@ui/view/spinner/Spinner";
+import ReservationsList from "./ReservationsList";
 import useAuthStore from "@stores/authStore";
+import useNotifiedMutation from "@ui/hooks/useNotifiedMutation";
 import queryClient, { invalidateAllQueries } from "../../query-client";
 
 export interface AcceptedReservationTabProps {
@@ -21,7 +21,8 @@ export default function AcceptedReservationsTab({
 }: AcceptedReservationTabProps) {
   const { filter, updateFilterAccommodationId } =
     useAcceptedReservationFilterStore();
-  const { user, isGuest } = useAuthStore();
+
+  const { isGuest } = useAuthStore();
   const { data, isLoading } = useQuery({
     queryKey: ["accepted_reservations", "reservations", filter],
     queryFn: async () => {
@@ -29,9 +30,10 @@ export default function AcceptedReservationsTab({
     },
   });
 
-  const cancelMutation = useMutation({
+  const cancelMutation = useNotifiedMutation({
     mutationFn: cancelReservation,
     onSuccess: () => invalidateAllQueries(queryClient, "reservations"),
+    showSuccessNotification: true,
   });
 
   return (
@@ -57,15 +59,18 @@ export default function AcceptedReservationsTab({
           <TextField {...params} label={"Accommodation"} variant="outlined" />
         )}
       />
-      <Box>
+      <Box sx={{ width: "100%" }}>
         {isLoading ? (
           <Spinner />
         ) : data ? (
-          <ReservationsList reservations={reservations} type="ACTIVE" mutation={cancelMutation} />
+          <ReservationsList
+            reservations={data}
+            type="ACTIVE"
+            primaryMutation={cancelMutation}
+          />
         ) : (
           <div>No reservations found</div>
         )}
-        ;
       </Box>
     </Box>
   );

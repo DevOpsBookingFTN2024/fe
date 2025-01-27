@@ -12,7 +12,6 @@ import { useQuery } from "@tanstack/react-query";
 import PageContainer from "@ui/container/PageContainer";
 import AppCard from "@ui/shared/AppCard";
 import Spinner from "@ui/view/spinner/Spinner";
-import React from "react";
 import AccommodationsList from "../../components/ui/shared/AccommodationsList";
 import AccommodationModal from "./AccommodationModal";
 
@@ -60,13 +59,8 @@ const MyAccommodationsPage = () => {
             <AccommodationsList
               isEdit={true}
               accommodations={accommodations ?? []}
-              onClick={function (event: React.SyntheticEvent | Event): void {
-                throw new Error("Function not implemented.");
-              }}
             />
           )}
-          {/* onClick={() => setMobileSidebarOpen(!isMobileSidebarOpen)}
-          /> */}
         </Box>
       </AppCard>
       <Fab

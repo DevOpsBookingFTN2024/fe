@@ -1,9 +1,4 @@
-import { deleteAccommodation } from "@api/accommodations/accommodations";
-import {
-  cancelReservation,
-  declineReservation,
-  Reservation,
-} from "@api/accommodations/reservations";
+import { Reservation } from "@api/accommodations/reservations";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import {
@@ -20,33 +15,30 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { useAccommodationModalStore } from "@stores/accommodationStore";
 import useAuthStore from "@stores/authStore";
-import {
-  IconCarambola,
-  IconHomeStar,
-  IconSlash,
-  IconTrash,
-} from "@tabler/icons-react";
-import { useMutation } from "@tanstack/react-query";
+import { IconCarambola, IconHomeStar, IconSlash } from "@tabler/icons-react";
 import { ConfirmModal } from "@ui/modal/ConfirmModal";
 import { useState } from "react";
-import queryClient, { invalidateAllQueries } from "../../query-client";
 
 interface Props {
   onClick?: (event: React.SyntheticEvent | Event) => void;
   reservations?: Reservation[];
   type?: "ACTIVE" | "PENDING" | "HISTORY" | "APPROVAL";
-  mutation?: any;
+  primaryMutation?: any;
+  secondaryMutation?: any;
 }
 
-const ReservationsList = ({ onClick, reservations, type, mutation }: Props) => {
-  const openAccommodationModal = useAccommodationModalStore(
-    (state) => state.openModal
-  );
+const ReservationsList = ({
+  onClick,
+  reservations,
+  type,
+  primaryMutation,
+  secondaryMutation,
+}: Props) => {
   const { isGuest } = useAuthStore();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPrimaryModalOpen, setIsPrimaryModalOpen] = useState(false);
+  const [isSecondaryModalOpen, setIsSecondaryModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string>();
 
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"));
@@ -62,7 +54,7 @@ const ReservationsList = ({ onClick, reservations, type, mutation }: Props) => {
               <Button
                 onClick={() => {
                   setSelectedId(reservation.id);
-                  setIsModalOpen(true);
+                  setIsPrimaryModalOpen(true);
                 }}
                 sx={{ marginTop: 1 }}
                 variant="text"
@@ -74,22 +66,24 @@ const ReservationsList = ({ onClick, reservations, type, mutation }: Props) => {
           );
         } else return null;
       case "PENDING":
-        return (
-          <>
-            <Divider />
+        if (isGuest) {
+          return (
             <Button
               onClick={() => {
                 setSelectedId(reservation.id);
-                setIsModalOpen(true);
+                setIsPrimaryModalOpen(true);
               }}
               sx={{ marginTop: 1 }}
               variant="text"
               color="error"
             >
-              Decline
+              Cancel
             </Button>
-          </>
-        );
+          );
+        } else {
+          return null;
+        }
+
       case "APPROVAL":
         return (
           <>
@@ -97,8 +91,8 @@ const ReservationsList = ({ onClick, reservations, type, mutation }: Props) => {
             <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
               <Button
                 onClick={() => {
-                  // Handle accept action
-                  console.log("Accepted:", reservation.id);
+                  setSelectedId(reservation.id);
+                  setIsPrimaryModalOpen(true);
                 }}
                 sx={{ marginTop: 1 }}
                 variant="text"
@@ -108,8 +102,8 @@ const ReservationsList = ({ onClick, reservations, type, mutation }: Props) => {
               </Button>
               <Button
                 onClick={() => {
-                  // Handle decline action
-                  console.log("Declined:", reservation.id);
+                  setSelectedId(reservation.id);
+                  setIsSecondaryModalOpen(true);
                 }}
                 sx={{ marginTop: 1 }}
                 variant="text"
@@ -257,7 +251,7 @@ const ReservationsList = ({ onClick, reservations, type, mutation }: Props) => {
                       fontWeight={600}
                       display={"flex"}
                     >
-                      Total: {reservation.totalPrice}
+                      Total: {reservation.totalPrice.toFixed(2)}
                     </Typography>
                   </Box>
                 </Box>
@@ -294,18 +288,33 @@ const ReservationsList = ({ onClick, reservations, type, mutation }: Props) => {
           <>{renderEmptyList()}</>
         )}
       </Grid>
-      {mutation && (
+      {primaryMutation && (
         <ConfirmModal
           title={"Confirm action"}
           content={"Are you sure you want to perform this action?"}
           // Icon={Icon}
-          isOpen={isModalOpen}
-          setIsOpen={setIsModalOpen}
+          isOpen={isPrimaryModalOpen}
+          setIsOpen={setIsPrimaryModalOpen}
           primaryAction={() => {
             if (!selectedId) return;
-            mutation?.mutate(selectedId);
+            primaryMutation?.mutate(selectedId);
             setSelectedId(undefined);
-            setIsModalOpen(false);
+            setIsPrimaryModalOpen(false);
+          }}
+        />
+      )}
+      {secondaryMutation && (
+        <ConfirmModal
+          title={"Confirm action"}
+          content={"Are you sure you want to perform this action?"}
+          // Icon={Icon}
+          isOpen={isSecondaryModalOpen}
+          setIsOpen={setIsSecondaryModalOpen}
+          primaryAction={() => {
+            if (!selectedId) return;
+            secondaryMutation?.mutate(selectedId);
+            setSelectedId(undefined);
+            setIsSecondaryModalOpen(false);
           }}
         />
       )}

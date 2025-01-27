@@ -268,9 +268,9 @@ const AccommodationsList = ({ accommodations, isEdit }: Props) => {
     <Grid item xs={12} lg={12} md={12} sm={12}>
       <Box textAlign="center" mt={6}>
         {/* <img src={emptyCart} alt="cart" width="200px" /> */}
-        <Typography variant="h2">No Accommodation</Typography>
+        <Typography variant="h2">No Accommodations</Typography>
         <Typography variant="h6" mb={3}>
-          No item.accommodationDTO found. Please try again.
+          No accommodations found. Please try again.
         </Typography>
       </Box>
     </Grid>

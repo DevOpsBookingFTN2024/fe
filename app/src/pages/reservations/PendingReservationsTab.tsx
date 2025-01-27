@@ -1,17 +1,19 @@
 import {
+  acceptReservation,
   cancelReservation,
   declineReservation,
   getPendingReservations,
 } from "@api/accommodations/reservations";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import ReservationsList from "./ReservationsList";
 import Spinner from "@ui/view/spinner/Spinner";
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { SelectAccommodation } from "@api/accommodations/accommodations";
-import { reservations } from "./ReservationsPage";
+// import { reservations } from "./ReservationsPage";
 import { usePendingReservationFilterStore } from "@stores/reservationsStore";
 import useAuthStore from "@stores/authStore";
 import queryClient, { invalidateAllQueries } from "../../query-client";
+import useNotifiedMutation from "@ui/hooks/useNotifiedMutation";
 
 export interface PendingReservationTabProps {
   selectAccommodations?: SelectAccommodation[];
@@ -30,9 +32,16 @@ export default function PendingReservationsTab({
     },
   });
 
-  const cancelMutation = useMutation({
+  const cancelMutation = useNotifiedMutation({
     mutationFn: isGuest ? cancelReservation : declineReservation,
     onSuccess: () => invalidateAllQueries(queryClient, "reservations"),
+    showSuccessNotification: true,
+  });
+
+  const approveMutation = useNotifiedMutation({
+    mutationFn: acceptReservation,
+    onSuccess: () => invalidateAllQueries(queryClient, "reservations"),
+    showSuccessNotification: true,
   });
 
   return (
@@ -58,19 +67,19 @@ export default function PendingReservationsTab({
           <TextField {...params} label={"Accommodation"} variant="outlined" />
         )}
       />
-      <Box>
+      <Box sx={{ width: "100%" }}>
         {isLoading ? (
           <Spinner />
         ) : data ? (
           <ReservationsList
-            reservations={reservations}
-            type="PENDING"
-            mutation={cancelMutation}
+            reservations={data}
+            type={isGuest ? "PENDING" : "APPROVAL"}
+            primaryMutation={approveMutation}
+            secondaryMutation={isGuest ? undefined : cancelMutation}
           />
         ) : (
           <div>No reservations found</div>
         )}
-        ;
       </Box>
     </Box>
   );

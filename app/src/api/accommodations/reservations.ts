@@ -1,5 +1,4 @@
 import { addListFilterParams, get, post, put } from "@api/utils";
-import { User } from "@api/user/user";
 
 const baseUrlGuest = new URL(
   "reservations/guest/",
@@ -41,12 +40,12 @@ export type Reservation = {
   id: string;
   guest: string;
   idAccommodation: string;
+  accommodation: Accommodation;
   dateFrom: string;
   dateTo: string;
   numberOfGuests: number;
   totalPrice: number;
   reservationStatus: ReservationStatus;
-  accommodation: Accommodation;
 };
 
 export type FilterReservation = {
@@ -70,6 +69,10 @@ export function cancelReservation(id: string) {
 
 export function declineReservation(id: string) {
   return put(new URL("decline/" + id, baseUrlHost), JSON.stringify({}));
+}
+
+export function acceptReservation(id: string) {
+  return put(new URL("accept/" + id, baseUrlHost), JSON.stringify({}));
 }
 
 export function getAcceptedReservations(

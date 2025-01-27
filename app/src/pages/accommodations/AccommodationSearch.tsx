@@ -16,8 +16,8 @@ export default function AccommodationSearch() {
   } = useAccommodationFilterStore();
 
   const [value, setValue] = useState<DateRange<Dayjs>>([
-    dayjs(new Date()),
-    dayjs(new Date()),
+    dayjs(filter.startDate ?? new Date()),
+    dayjs(filter.endDate ?? new Date()),
   ]);
   const [country, setCountry] = useState(filter.country ?? "");
   const [city, setCity] = useState(filter.city ?? "");
@@ -26,12 +26,17 @@ export default function AccommodationSearch() {
   const handleSearch = () => {
     updateFilterCountry(country);
     updateFilterCity(city);
-    updateFilterGuestCount(guestCount.toString() || "1"); // Default to 1 if empty
-    if (value[0]) updateFilterStartDate(value[0].toISOString());
-    if (value[1]) updateFilterEndDate(value[1].toISOString());
+    updateFilterGuestCount(guestCount.toString() || "1");
+    if (value[0]) {
+      updateFilterStartDate(value[0].endOf("day").toISOString());
+    }
+    if (value[1]) {
+      const adjustedEndDate = value[1].endOf("day");
+      updateFilterEndDate(adjustedEndDate?.toISOString());
+    }
   };
 
-  const isSearchDisabled =  !guestCount || Number(guestCount) <= 0;
+  const isSearchDisabled = !guestCount || Number(guestCount) <= 0;
 
   return (
     <Stack spacing={2} direction="row">
@@ -39,7 +44,10 @@ export default function AccommodationSearch() {
         sx={{ width: "100%" }}
         value={value}
         localeText={{ start: "Check-in", end: "Check-out" }}
-        onChange={(newValue) => setValue(newValue)}
+        onChange={(newValue) => {
+          console.log(newValue);
+          setValue(newValue);
+        }}
       />
       <TextField
         id="outlined-search-country"

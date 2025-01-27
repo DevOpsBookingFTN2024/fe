@@ -39,6 +39,7 @@ const useAuthStore = create<AuthStore>((set) => {
 
       return set(() => ({
         isValid: isTokenValid(newParsedToken),
+        isGuest: newUser.roles.includes("ROLE_GUEST"),
         user: newUser,
       }));
     },

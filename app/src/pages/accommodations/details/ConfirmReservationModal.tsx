@@ -1,4 +1,8 @@
 import {
+  createReservation,
+  InputReservation,
+} from "@api/accommodations/reservations";
+import {
   Box,
   Button,
   Dialog,
@@ -7,18 +11,13 @@ import {
   DialogTitle,
   Icon,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
-import queryClient, { invalidateAllQueries } from "../../../query-client";
-import useNotifiedMutation from "@ui/hooks/useNotifiedMutation";
 import { DatePicker } from "@mui/x-date-pickers";
+import useNotifiedMutation from "@ui/hooks/useNotifiedMutation";
 import dayjs from "dayjs";
-import {
-  createReservation,
-  InputReservation,
-} from "@api/accommodations/reservations";
 import { useNavigate } from "react-router-dom";
+import queryClient, { invalidateAllQueries } from "../../../query-client";
 
 export interface ConfirmModalProps {
   item: InputReservation;
@@ -44,9 +43,9 @@ export default function ConfirmReservationModal({
     mutationFn: createReservation,
 
     onSuccess: () => {
-      invalidateAllQueries(queryClient, "items");
+      invalidateAllQueries(queryClient, "reservations");
       handleCloseModal();
-      navigate("/");
+      navigate("/reservations");
     },
     showSuccessNotification: true,
   });

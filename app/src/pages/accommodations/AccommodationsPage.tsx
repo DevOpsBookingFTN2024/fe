@@ -24,6 +24,8 @@ const BCrumb = [
 const AccommodationsPage = () => {
   const { filter } = useAccommodationFilterStore();
 
+  console.log("filter", filter);
+
   const {
     data: accommodations,
     isFetching,

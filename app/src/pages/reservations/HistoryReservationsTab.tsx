@@ -1,16 +1,12 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import ReservationsList from "./ReservationsList";
-import Spinner from "@ui/view/spinner/Spinner";
-import { Autocomplete, Box, TextField } from "@mui/material";
 import { SelectAccommodation } from "@api/accommodations/accommodations";
-import { reservations } from "./ReservationsPage";
-import { usePassedReservationFilterStore } from "@stores/reservationsStore";
-import {
-  cancelReservation,
-  declineReservation,
-  getPassedReservations,
-} from "@api/accommodations/reservations";
+import { Autocomplete, Box, TextField } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import Spinner from "@ui/view/spinner/Spinner";
+import ReservationsList from "./ReservationsList";
+// import { reservations } from "./ReservationsPage";
+import { getPassedReservations } from "@api/accommodations/reservations";
 import useAuthStore from "@stores/authStore";
+import { usePassedReservationFilterStore } from "@stores/reservationsStore";
 export interface HistoryReservationTabProps {
   selectAccommodations?: SelectAccommodation[];
 }
@@ -20,7 +16,7 @@ export default function HistoryReservationsTab({
 }: HistoryReservationTabProps) {
   const { filter, updateFilterAccommodationId } =
     usePassedReservationFilterStore();
-  const { user, isGuest } = useAuthStore();
+  const { isGuest } = useAuthStore();
   const { data, isLoading } = useQuery({
     queryKey: ["history_reservations", "reservations", filter],
     queryFn: async () => {
@@ -28,7 +24,6 @@ export default function HistoryReservationsTab({
     },
   });
 
- 
   return (
     <Box
       display={"flex"}
@@ -52,18 +47,14 @@ export default function HistoryReservationsTab({
           <TextField {...params} label={"Accommodation"} variant="outlined" />
         )}
       />
-      <Box>
+      <Box sx={{ width: "100%" }}>
         {isLoading ? (
           <Spinner />
         ) : data ? (
-          <ReservationsList
-            reservations={reservations}
-            type="HISTORY"
-          />
+          <ReservationsList reservations={data} type="HISTORY" />
         ) : (
           <div>No reservations found</div>
         )}
-        ;
       </Box>
     </Box>
   );

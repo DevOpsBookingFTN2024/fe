@@ -39,7 +39,6 @@ const browserConfig = createBrowserRouter([
                 index: true,
                 element: <AccommodationDetailsPage />,
                 errorElement: <ErrorPage />,
-                // loader: productLoader,
               },
             ],
           },
