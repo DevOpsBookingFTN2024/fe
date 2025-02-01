@@ -209,7 +209,7 @@ const AccommodationsList = ({ accommodations, isEdit }: Props) => {
                     fontWeight={600}
                     display={"flex"}
                   >
-                    Total: {}
+                    Total: {item.priceAll.toFixed(2)}
                   </Typography>
                 )}
               </Box>
