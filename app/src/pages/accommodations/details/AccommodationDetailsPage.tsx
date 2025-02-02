@@ -21,11 +21,11 @@ const BCrumb = [
     title: "Home",
   },
   {
-    title: "Shop",
-    to: "/apps/ecommerce",
+    title: "Accommodations",
+    to: "/",
   },
   {
-    title: "detail",
+    title: "Detail",
   },
 ];
 

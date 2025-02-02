@@ -1,3 +1,4 @@
+import { USER_KEY } from "@api/auth";
 import {
   changePassword,
   deleteAccount,
@@ -14,7 +15,7 @@ import {
   CardContent,
   Grid,
   Stack,
-  Typography,
+  Typography
 } from "@mui/material";
 import useAuthStore from "@stores/authStore";
 import { useQuery } from "@tanstack/react-query";
@@ -24,10 +25,10 @@ import useNotifiedMutation from "@ui/hooks/useNotifiedMutation";
 import BlankCard from "@ui/shared/BlankCard";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import accountSchema from "./accountSchema";
-import passwordSchema from "./passwordSchema";
 import { useNavigate } from "react-router-dom";
-import { USER_KEY } from "@api/auth";
+import accountSchema from "./accountSchema";
+import UserNotificationsForm from "./NotificationsForm";
+import passwordSchema from "./passwordSchema";
 
 const AccountForms = () => {
   const { user, setUser, deleteUser } = useAuthStore((state) => state);
@@ -118,7 +119,7 @@ const AccountForms = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} lg={4}>
+      <Grid item xs={12} lg={3}>
         <BlankCard>
           <CardContent>
             <Typography variant="h5" mb={1}>
@@ -235,7 +236,7 @@ const AccountForms = () => {
       </Grid>
 
       {/* Edit Details */}
-      <Grid item xs={12} lg={8}>
+      <Grid item xs={12} lg={6}>
         <BlankCard>
           <CardContent>
             <Typography variant="h5" mb={1}>
@@ -416,6 +417,9 @@ const AccountForms = () => {
             Cancel
           </Button>
         </Stack>
+      </Grid>
+      <Grid item xs={12} lg={3}>
+        <UserNotificationsForm />
       </Grid>
       <Grid item xs={12}>
         <BlankCard>

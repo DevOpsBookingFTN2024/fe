@@ -1,14 +1,14 @@
-import { FC, useEffect } from "react";
-import { styled, Container, Box, useTheme } from "@mui/material";
-import { Navigate, Outlet } from "react-router-dom";
-import Header from "./vertical/header/Header";
-import Sidebar from "./vertical/sidebar/Sidebar";
+import { Box, Container, styled, useTheme } from "@mui/material";
 import useAuthStore from "@stores/authStore";
 import ScrollToTop from "@ui/shared/ScrollToTop";
+import { FC } from "react";
+import { Outlet } from "react-router-dom";
+import Header from "./vertical/header/Header";
+import Sidebar from "./vertical/sidebar/Sidebar";
 
-import Notification from "@ui/Notification";
-import { useNotificationStore } from "@stores/notificationStore";
 import { useCustomizerStore } from "@stores/customizerStore";
+import { useNotificationStore } from "@stores/notificationStore";
+import Notification from "@ui/Notification";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
