@@ -3,7 +3,6 @@ import { Autocomplete, Box, TextField } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "@ui/view/spinner/Spinner";
 import ReservationsList from "./ReservationsList";
-// import { reservations } from "./ReservationsPage";
 import { getPassedReservations } from "@api/accommodations/reservations";
 import useAuthStore from "@stores/authStore";
 import { usePassedReservationFilterStore } from "@stores/reservationsStore";

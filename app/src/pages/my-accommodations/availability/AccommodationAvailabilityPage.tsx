@@ -25,25 +25,6 @@ const BCrumb = [
   },
 ];
 
-// const accommodation: Accommodation = {
-//   id: "4",
-//   name: "Lakeview Lodge",
-//   address: "Lakeside Drive 3",
-//   city: "Bled",
-//   country: "Slovenia",
-//   minimumGuests: 3,
-//   maximumGuests: 10,
-//   pricingStrategy: "PER_UNIT",
-//   approvalStrategy: "AUTOMATIC",
-//   hostScore: 4.5,
-//   host: "John Doe",
-//   facilities: [
-//     { id: "9", name: "Wi-Fi" },
-//     { id: "10", name: "Pet Friendly" },
-//     { id: "11", name: "BBQ Area" },
-//   ],
-// };
-
 export default function AccommodationAvailabilityPage() {
   const { accommodationId } = useParams();
 
@@ -51,8 +32,8 @@ export default function AccommodationAvailabilityPage() {
     queryKey: ["accommodation_details", accommodationId],
     queryFn: () => getAccommodationById(accommodationId ?? ""),
   });
-  const imageUrls = data?.photos.length
-    ? data?.photos.map(
+  const imageUrls = data?.accommodationDTO.photos.length
+    ? data?.accommodationDTO.photos.map(
         (photo) =>
           `${import.meta.env.VITE_ACCOMMODATIONS_API_URL}photos/${photo.url}`
       )
@@ -83,17 +64,13 @@ export default function AccommodationAvailabilityPage() {
                     <Carousel images={imageUrls} />
                   </Grid>
                   <Grid item xs={12} sm={12} lg={6}>
-                    <AccommodationDetails accommodation={data} />
+                    <AccommodationDetails item={data} />
                   </Grid>
                 </Grid>
               </ChildCard>
             </Grid>
             <Grid item xs={12} sm={12} lg={12}>
               <AvailabilityCalendarV2 />
-              {/* <ProductDesc /> */}
-            </Grid>
-            <Grid item xs={12} sm={12} lg={12}>
-              {/* <ProductRelated /> */}
             </Grid>
           </Grid>
           <AvailabilityModal />

@@ -1,16 +1,12 @@
-import React from "react";
-import { Box } from "@mui/material";
-import PageContainer from "@ui/container/PageContainer";
+import { searchAccommodations } from "@api/accommodations/accommodations";
 import Breadcrumb from "@layout/full/shared/breadcrumb/Breadcrumb";
-import AppCard from "@ui/shared/AppCard";
-import AccommodationsList from "../../components/ui/shared/AccommodationsList";
-import {
-  Accommodation,
-  searchAccommodations,
-} from "@api/accommodations/accommodations";
+import { Box } from "@mui/material";
 import { useAccommodationFilterStore } from "@stores/accommodationStore";
 import { useQuery } from "@tanstack/react-query";
+import PageContainer from "@ui/container/PageContainer";
+import AppCard from "@ui/shared/AppCard";
 import Spinner from "@ui/view/spinner/Spinner";
+import AccommodationsList from "../../components/ui/shared/AccommodationsList";
 
 const BCrumb = [
   {
@@ -23,8 +19,6 @@ const BCrumb = [
 ];
 const AccommodationsPage = () => {
   const { filter } = useAccommodationFilterStore();
-
-  console.log("filter", filter);
 
   const {
     data: accommodations,
@@ -46,16 +40,6 @@ const AccommodationsPage = () => {
       {/* breadcrumb */}
       <Breadcrumb title="Accommodations" items={BCrumb} />
       <AppCard>
-        {/* ------------------------------------------- */}
-        {/* Left part */}
-        {/* ------------------------------------------- */}
-        {/* <ProductSidebar
-          isMobileSidebarOpen={isMobileSidebarOpen}
-          onSidebarClose={() => setMobileSidebarOpen(false)}
-        /> */}
-        {/* ------------------------------------------- */}
-        {/* Right part */}
-        {/* ------------------------------------------- */}
         <Box p={5} flexGrow={1}>
           {isLoading || isFetching ? (
             <Spinner />
@@ -64,8 +48,6 @@ const AccommodationsPage = () => {
               accommodations={accommodations != undefined ? accommodations : []}
             />
           )}
-          {/* onClick={() => setMobileSidebarOpen(!isMobileSidebarOpen)}
-          /> */}
         </Box>
       </AppCard>
     </PageContainer>
