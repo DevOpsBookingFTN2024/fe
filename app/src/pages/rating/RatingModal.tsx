@@ -1,10 +1,12 @@
 import {
   deleteAccommodationRatingById,
   deleteHostRatingById,
+  getAccommodationRatingByGuest,
+  getHostRatingByGuest,
   rateAccommodation,
   rateHost,
   updateAccommodationRatingById,
-  updateHostRatingById
+  updateHostRatingById,
 } from "@api/accommodations/rating";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -19,14 +21,14 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import useNotifiedMutation from "@ui/hooks/useNotifiedMutation";
+import queryClient, { invalidateAllQueries } from "../../query-client";
 
 export interface RatingModalProps {
-  rating: number;
   ratingId: string;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  isLoading?: boolean;
   ratingType: "HOST" | "ACCOMMODATION";
 }
 
@@ -34,13 +36,29 @@ export default function RatingModal({
   isOpen,
   setIsOpen,
   ratingId,
-  isLoading = false,
   ratingType,
-  rating,
 }: RatingModalProps) {
   const closeModal = () => {
     if (!isLoading) setIsOpen(false);
   };
+
+  const { data, isLoading, refetch, error } = useQuery({
+    queryKey: ["rating", ratingType],
+    queryFn: async () => {
+      try {
+        return ratingType === "ACCOMMODATION"
+          ? await getAccommodationRatingByGuest(ratingId)
+          : await getHostRatingByGuest(ratingId);
+      } catch (error: any) {
+        if (error.response?.status === 404) {
+          return null;
+        }
+        throw error;
+      }
+    },
+    enabled: isOpen,
+    retry: false,
+  });
 
   const getMutationFn = (actionType: "update" | "create") => {
     if (ratingType === "HOST") {
@@ -52,9 +70,13 @@ export default function RatingModal({
   };
 
   const ratingMutation = useNotifiedMutation({
-    mutationFn: rating ? getMutationFn("update") : getMutationFn("create"),
-    onSuccess: closeModal,
-    showSuccessNotification: true,
+    mutationFn: data ? getMutationFn("update") : getMutationFn("create"),
+    onSuccess: () => {
+      invalidateAllQueries(queryClient, "rating");
+      invalidateAllQueries(queryClient, "guests_rating");
+      refetch();
+    },
+    showSuccessNotification: false,
   });
 
   const deleteRatingMutation = useNotifiedMutation({
@@ -62,13 +84,20 @@ export default function RatingModal({
       ratingType === "HOST"
         ? deleteHostRatingById
         : deleteAccommodationRatingById,
-    onSuccess: closeModal,
-    showSuccessNotification: true,
+    onSuccess: () => {
+      invalidateAllQueries(queryClient, "rating");
+      invalidateAllQueries(queryClient, "guests_rating");
+      refetch();
+    },
+    showSuccessNotification: false,
   });
 
   const handleRatingChange = (newValue: number | null) => {
     if (newValue !== null) {
-      ratingMutation.mutate({ id: ratingId, rating: newValue });
+      ratingMutation.mutate({
+        id: data ? data.id : ratingId,
+        rating: newValue,
+      });
     }
   };
 
@@ -91,10 +120,14 @@ export default function RatingModal({
           <Typography component="legend">Your Rating</Typography>
           <Rating
             name="rating"
-            value={rating}
+            value={data?.rating ?? null}
             onChange={(event, newValue) => handleRatingChange(newValue)}
           />
-          <IconButton onClick={() => deleteRatingMutation.mutate(ratingId)}>
+          <IconButton
+            onClick={() =>
+              deleteRatingMutation.mutate(data ? data.id : ratingId)
+            }
+          >
             <DeleteIcon />
           </IconButton>
         </Box>
@@ -106,7 +139,7 @@ export default function RatingModal({
           onClick={closeModal}
           disabled={isLoading}
         >
-          Cancel
+          Close
         </Button>
       </DialogActions>
     </Dialog>

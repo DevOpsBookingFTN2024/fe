@@ -1,4 +1,10 @@
 import {
+  AccommodationDTO,
+  deleteAccommodation,
+  Facility,
+  updateAccommodation,
+} from "@api/accommodations/accommodations";
+import {
   Box,
   Button,
   Card,
@@ -9,25 +15,16 @@ import {
   Grid,
   IconButton,
   Rating,
-  Theme,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
+import AccommodationSearch from "@pages/accommodations/AccommodationSearch";
+import { useAccommodationModalStore } from "@stores/accommodationStore";
 import { IconEdit, IconSlash, IconTrash } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { ConfirmModal } from "@ui/modal/ConfirmModal";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import queryClient, { invalidateAllQueries } from "../../../query-client";
-import {
-  AccommodationDTO,
-  deleteAccommodation,
-  Facility,
-  updateAccommodation,
-} from "@api/accommodations/accommodations";
-import { useAccommodationModalStore } from "@stores/accommodationStore";
-import AccommodationSearch from "@pages/accommodations/AccommodationSearch";
 
 interface Props {
   accommodations: AccommodationDTO[];
@@ -47,9 +44,6 @@ const AccommodationsList = ({ accommodations, isEdit }: Props) => {
     onSuccess: () =>
       invalidateAllQueries(queryClient, "item.accommodationDTOs"),
   });
-
-  const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"));
-  const theme = useTheme();
 
   const renderItem = (item: AccommodationDTO, index: number) => (
     <Grid
@@ -139,11 +133,11 @@ const AccommodationsList = ({ accommodations, isEdit }: Props) => {
                   Score
                 </Typography>
                 <Typography variant="h5" color="primary">
-                  {4.2}
+                  {item.averageAccommodationScore}
                 </Typography>
-                <Typography variant="body2" color="textSecondary">
+                {/* <Typography variant="body2" color="textSecondary">
                   {5} reviews
-                </Typography>
+                </Typography> */}
               </Box>
             </Box>
 
@@ -165,7 +159,7 @@ const AccommodationsList = ({ accommodations, isEdit }: Props) => {
                   Host Score:
                 </Typography>
                 <Rating
-                  value={item.accommodationDTO.hostScore}
+                  value={item.averageHostScore}
                   precision={0.5}
                   readOnly
                 />
@@ -175,7 +169,7 @@ const AccommodationsList = ({ accommodations, isEdit }: Props) => {
                   color="primary"
                   sx={{ ml: 1 }}
                 >
-                  {item.accommodationDTO.hostScore}
+                  {item.averageHostScore}
                 </Typography>
               </Box>
               <Box sx={{ textAlign: "right" }}>

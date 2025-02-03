@@ -2,12 +2,12 @@ import { del, get, post, put } from "@api/utils";
 
 const baseUrlHost = new URL(
   "ratings/host/",
-  new URL(import.meta.env.VITE_RESERVATIONS_API_URL, window.location.origin)
+  new URL(import.meta.env.VITE_RATING_API_URL, window.location.origin)
 );
 
 const baseUrlAccommodation = new URL(
   "ratings/accommodation/",
-  new URL(import.meta.env.VITE_RESERVATIONS_API_URL, window.location.origin)
+  new URL(import.meta.env.VITE_RATING_API_URL, window.location.origin)
 );
 
 export type InputRating = {
@@ -24,6 +24,10 @@ export function rateHost(input: InputRating) {
 
 export function getHostRatingsByHost(host: string) {
   return get(new URL("all/" + host, baseUrlHost));
+}
+
+export function getHostRatingByGuest(host: string) {
+  return get(new URL("guest/" + host, baseUrlHost));
 }
 
 export function getHostRatingById(id: string) {
@@ -51,11 +55,15 @@ export function getAccommodationRatingsByAccommodationId(
   return get(new URL("all/" + accommodationId, baseUrlAccommodation));
 }
 
+export function getAccommodationRatingByGuest( accommodationId: string) {
+  return get(new URL("guest/" + accommodationId, baseUrlAccommodation));
+}
+
 export function getAccommodationRatingById(id: string) {
   return get(new URL(id, baseUrlAccommodation));
 }
 
-export function updateAccommodationRatingById( input: InputRating) {
+export function updateAccommodationRatingById(input: InputRating) {
   return put(
     new URL("update/" + input.id, baseUrlAccommodation),
     JSON.stringify(input)

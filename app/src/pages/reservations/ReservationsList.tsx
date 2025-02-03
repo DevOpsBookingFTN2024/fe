@@ -10,12 +10,10 @@ import {
   Chip,
   Divider,
   Grid,
-  Typography,
-  useTheme,
+  Typography
 } from "@mui/material";
-import RatingModal from "@pages/rating/RatingModal";
 import useAuthStore from "@stores/authStore";
-import { IconCarambola, IconHomeStar, IconSlash } from "@tabler/icons-react";
+import { IconSlash } from "@tabler/icons-react";
 import { ConfirmModal } from "@ui/modal/ConfirmModal";
 import { useState } from "react";
 
@@ -37,13 +35,8 @@ const ReservationsList = ({
   const [modalsState, setModalsState] = useState({
     isPrimaryModalOpen: false,
     isSecondaryModalOpen: false,
-    isRatingModalOpen: false,
     selectedId: "",
-    ratingId: "",
-    ratingType: "HOST" as "HOST" | "ACCOMMODATION",
   });
-
-  const theme = useTheme();
 
   const openModal = (modal: keyof typeof modalsState, id = "") => {
     setModalsState((prev) => ({ ...prev, [modal]: true, selectedId: id }));
@@ -53,14 +46,6 @@ const ReservationsList = ({
     setModalsState((prev) => ({ ...prev, [modal]: false, selectedId: "" }));
   };
 
-  const handleRate = (type: "HOST" | "ACCOMMODATION", id: string) => {
-    setModalsState({
-      ...modalsState,
-      isRatingModalOpen: true,
-      ratingId: id,
-      ratingType: type,
-    });
-  };
 
   const renderActions = (reservation: Reservation) => {
     if (type === "ACTIVE" || type === "PENDING") {
@@ -102,35 +87,6 @@ const ReservationsList = ({
             </Button>
           </Box>
         </>
-      );
-    }
-
-    if (
-      type === "HISTORY" &&
-      reservation.reservationStatus === "PASSED" &&
-      isGuest
-    ) {
-      return (
-        <><Divider /><Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
-          <Button
-            onClick={() => handleRate("HOST", reservation.accommodation.host)}
-            sx={{ marginTop: 1 }}
-            variant="text"
-            color="warning"
-            startIcon={<IconCarambola />}
-          >
-            Rate host
-          </Button>
-          <Button
-            onClick={() => handleRate("ACCOMMODATION", reservation.accommodation.id)}
-            sx={{ marginTop: 1 }}
-            variant="text"
-            color="warning"
-            startIcon={<IconHomeStar />}
-          >
-            Rate accommodation
-          </Button>
-        </Box></>
       );
     }
 
@@ -256,12 +212,6 @@ const ReservationsList = ({
           }}
         />
       )}
-      <RatingModal
-        ratingId={modalsState.ratingId}
-        isOpen={modalsState.isRatingModalOpen}
-        setIsOpen={() => closeModal("isRatingModalOpen")}
-        ratingType={modalsState.ratingType}
-      />
     </Box>
   );
 };
