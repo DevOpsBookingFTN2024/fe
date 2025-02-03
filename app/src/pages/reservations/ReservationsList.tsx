@@ -10,267 +10,165 @@ import {
   Chip,
   Divider,
   Grid,
-  Theme,
-  Typography,
-  useMediaQuery,
-  useTheme,
+  Typography
 } from "@mui/material";
 import useAuthStore from "@stores/authStore";
-import { IconCarambola, IconHomeStar, IconSlash } from "@tabler/icons-react";
+import { IconSlash } from "@tabler/icons-react";
 import { ConfirmModal } from "@ui/modal/ConfirmModal";
 import { useState } from "react";
 
 interface Props {
-  onClick?: (event: React.SyntheticEvent | Event) => void;
   reservations?: Reservation[];
   type?: "ACTIVE" | "PENDING" | "HISTORY" | "APPROVAL";
-  primaryMutation?: any;
-  secondaryMutation?: any;
+  primaryMutation?: (id: string) => void;
+  secondaryMutation?: (id: string) => void;
 }
 
 const ReservationsList = ({
-  onClick,
-  reservations,
+  reservations = [],
   type,
   primaryMutation,
   secondaryMutation,
 }: Props) => {
   const { isGuest } = useAuthStore();
 
-  const [isPrimaryModalOpen, setIsPrimaryModalOpen] = useState(false);
-  const [isSecondaryModalOpen, setIsSecondaryModalOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<string>();
+  const [modalsState, setModalsState] = useState({
+    isPrimaryModalOpen: false,
+    isSecondaryModalOpen: false,
+    selectedId: "",
+  });
 
-  const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"));
-  const theme = useTheme();
+  const openModal = (modal: keyof typeof modalsState, id = "") => {
+    setModalsState((prev) => ({ ...prev, [modal]: true, selectedId: id }));
+  };
 
-  const renderActions = (type: Props["type"], reservation: Reservation) => {
-    switch (type) {
-      case "ACTIVE":
-        if (isGuest) {
-          return (
-            <>
-              <Divider />
-              <Button
-                onClick={() => {
-                  setSelectedId(reservation.id);
-                  setIsPrimaryModalOpen(true);
-                }}
-                sx={{ marginTop: 1 }}
-                variant="text"
-                color="error"
-              >
-                Cancel
-              </Button>
-            </>
-          );
-        } else return null;
-      case "PENDING":
-        if (isGuest) {
-          return (
+  const closeModal = (modal: keyof typeof modalsState) => {
+    setModalsState((prev) => ({ ...prev, [modal]: false, selectedId: "" }));
+  };
+
+
+  const renderActions = (reservation: Reservation) => {
+    if (type === "ACTIVE" || type === "PENDING") {
+      return isGuest ? (
+        <>
+          <Divider />
+          <Button
+            onClick={() => openModal("isPrimaryModalOpen", reservation.id)}
+            sx={{ marginTop: 1 }}
+            variant="text"
+            color="error"
+          >
+            Cancel
+          </Button>
+        </>
+      ) : null;
+    }
+
+    if (type === "APPROVAL") {
+      return (
+        <>
+          <Divider />
+          <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
             <Button
-              onClick={() => {
-                setSelectedId(reservation.id);
-                setIsPrimaryModalOpen(true);
-              }}
+              onClick={() => openModal("isPrimaryModalOpen", reservation.id)}
+              sx={{ marginTop: 1 }}
+              variant="text"
+              color="success"
+            >
+              Accept
+            </Button>
+            <Button
+              onClick={() => openModal("isSecondaryModalOpen", reservation.id)}
               sx={{ marginTop: 1 }}
               variant="text"
               color="error"
             >
-              Cancel
+              Decline
             </Button>
-          );
-        } else {
-          return null;
-        }
-
-      case "APPROVAL":
-        return (
-          <>
-            <Divider />
-            <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
-              <Button
-                onClick={() => {
-                  setSelectedId(reservation.id);
-                  setIsPrimaryModalOpen(true);
-                }}
-                sx={{ marginTop: 1 }}
-                variant="text"
-                color="success"
-              >
-                Accept
-              </Button>
-              <Button
-                onClick={() => {
-                  setSelectedId(reservation.id);
-                  setIsSecondaryModalOpen(true);
-                }}
-                sx={{ marginTop: 1 }}
-                variant="text"
-                color="error"
-              >
-                Decline
-              </Button>
-            </Box>
-          </>
-        );
-      case "HISTORY":
-        if (reservation.reservationStatus === "PASSED" && isGuest) {
-          return (
-            <>
-              <Divider />
-              <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
-                <Button
-                  onClick={() => {
-                    // Handle accept action
-                    console.log("Accepted:", reservation.id);
-                  }}
-                  sx={{ marginTop: 1 }}
-                  variant="text"
-                  color="warning"
-                  startIcon={<IconCarambola />}
-                >
-                  Rate host
-                </Button>
-                <Button
-                  onClick={() => {
-                    // Handle decline action
-                    console.log("Declined:", reservation.id);
-                  }}
-                  sx={{ marginTop: 1 }}
-                  variant="text"
-                  color="warning"
-                  startIcon={<IconHomeStar />}
-                >
-                  Rate accommodation
-                </Button>
-              </Box>
-            </>
-          );
-        }
-        return null;
-      default:
-        return null; // Default case
+          </Box>
+        </>
+      );
     }
+
+    return null;
   };
 
-  const renderItem = (reservation: Reservation, theme: Theme) => {
-    return (
-      <Grid
-        item
-        xs={12}
-        lg={12}
-        md={12}
-        sm={12}
-        display="flex"
-        alignItems="stretch"
-        key={reservation.id}
+  const renderReservationCard = (reservation: Reservation) => (
+    <Grid item xs={12} display="flex" alignItems="stretch" key={reservation.id}>
+      <Card
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          boxShadow: 3,
+          borderRadius: 2,
+          paddingBottom: "0px",
+        }}
       >
-        <Card
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            boxShadow: 3,
-            borderRadius: 2,
-            paddingBottom: "0px",
-          }}
-        >
-          {type === "HISTORY" && (
-            <CardHeader
-              title={reservation.reservationStatus}
-              sx={{
-                color:
-                  reservation.reservationStatus === "PASSED"
-                    ? "#32a852"
-                    : "red",
-                textAlign: "center",
-                py: 0,
-              }}
-            />
-          )}
-
-          <Box sx={{ display: "flex", flex: 1, py: 0 }}>
-            {/* Content Section */}
-            <CardContent
-              sx={{ flex: 1, display: "flex", flexDirection: "column", py: 0 }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "start",
-                }}
-              >
-                <Box>
-                  <Typography variant="h6" fontWeight="bold">
-                    {reservation.accommodation.name}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" mt={1}>
-                    {reservation.accommodation.address},{" "}
-                    {reservation.accommodation.city}
-                  </Typography>
-                  <Box sx={{ textAlign: "right" }}>
-                    <Typography
-                      mt={1}
-                      variant="h6"
-                      fontWeight={600}
-                      display={"flex"}
-                    >
-                      $X.X <IconSlash />
-                      <Chip
-                        label={
-                          reservation.accommodation.pricingStrategy ==
-                          "PER_GUEST"
-                            ? "Guest"
-                            : "Unit"
-                        }
-                        color="success"
-                        size="small"
-                      />
-                    </Typography>
-                  </Box>
-                </Box>
-                <Box display="flex" flexDirection={"column"} alignItems={"end"}>
-                  <Box display="flex" alignItems="center">
-                    <CalendarMonthIcon sx={{ marginRight: 1 }} />
-                    <Typography variant="body1">
-                      {new Date(reservation.dateFrom).toLocaleDateString()} -{" "}
-                      {new Date(reservation.dateTo).toLocaleDateString()}
-                    </Typography>
-                  </Box>
-                  <Box display="flex" alignItems="center">
-                    <PeopleOutlineIcon sx={{ marginRight: 1 }} />
-                    <Typography variant="h6">
-                      {reservation.numberOfGuests}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography
-                      mt={1}
-                      variant="h5"
-                      fontWeight={600}
-                      display={"flex"}
-                    >
-                      Total: {reservation.totalPrice.toFixed(2)}
-                    </Typography>
-                  </Box>
-                </Box>
+        {type === "HISTORY" && (
+          <CardHeader
+            title={reservation.reservationStatus}
+            sx={{
+              color:
+                reservation.reservationStatus === "PASSED" ? "#32a852" : "red",
+              textAlign: "center",
+              py: 0,
+            }}
+          />
+        )}
+        <CardContent sx={{ display: "flex", flexDirection: "column", py: 0 }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Box>
+              <Typography variant="h6" fontWeight="bold">
+                {reservation.accommodation.name}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" mt={1}>
+                {reservation.accommodation.address},{" "}
+                {reservation.accommodation.city}
+              </Typography>
+              <Box sx={{ textAlign: "right" }}>
+                <Typography
+                  mt={1}
+                  variant="h6"
+                  fontWeight={600}
+                  display={"flex"}
+                >
+                  $X.X <IconSlash />
+                  <Chip
+                    label={
+                      reservation.accommodation.pricingStrategy == "PER_GUEST"
+                        ? "Guest"
+                        : "Unit"
+                    }
+                    color="success"
+                    size="small"
+                  />
+                </Typography>
               </Box>
-            </CardContent>
+            </Box>
+            <Box>
+              <Typography variant="body1" display="flex" alignItems="center">
+                <CalendarMonthIcon sx={{ mr: 1 }} />
+                {new Date(reservation.dateFrom).toLocaleDateString()} -{" "}
+                {new Date(reservation.dateTo).toLocaleDateString()}
+              </Typography>
+              <Typography variant="h6" display="flex" alignItems="center">
+                <PeopleOutlineIcon sx={{ mr: 1 }} />
+                {reservation.numberOfGuests}
+              </Typography>
+              <Typography mt={1} variant="h5" fontWeight={600}>
+                Total: ${reservation.totalPrice.toFixed(2)}
+              </Typography>
+            </Box>
           </Box>
-          {/* Actions Section */}
-          <Box p={2} py={1} textAlign={"center"}>
-            {renderActions(type, reservation)}
-          </Box>
-        </Card>
-      </Grid>
-    );
-  };
+          <Box textAlign={"center"}>{renderActions(reservation)}</Box>
+        </CardContent>
+      </Card>
+    </Grid>
+  );
 
-  const renderEmptyList = () => (
-    <Grid item xs={12} lg={12} md={12} sm={12}>
+  const renderEmptyState = () => (
+    <Grid item xs={12}>
       <Box textAlign="center" mt={6}>
-        {/* <img src={emptyCart} alt="cart" width="200px" /> */}
         <Typography variant="h2">No reservations</Typography>
         <Typography variant="h6" mb={3}>
           No reservations found.
@@ -282,39 +180,35 @@ const ReservationsList = ({
   return (
     <Box>
       <Grid container spacing={3}>
-        {reservations?.length && reservations.length > 0 ? (
-          reservations.map((reservation) => renderItem(reservation, theme))
-        ) : (
-          <>{renderEmptyList()}</>
-        )}
+        {reservations.length > 0
+          ? reservations.map(renderReservationCard)
+          : renderEmptyState()}
       </Grid>
       {primaryMutation && (
         <ConfirmModal
-          title={"Confirm action"}
-          content={"Are you sure you want to perform this action?"}
-          // Icon={Icon}
-          isOpen={isPrimaryModalOpen}
-          setIsOpen={setIsPrimaryModalOpen}
+          title="Confirm action"
+          content="Are you sure you want to perform this action?"
+          isOpen={modalsState.isPrimaryModalOpen}
+          setIsOpen={() => closeModal("isPrimaryModalOpen")}
           primaryAction={() => {
-            if (!selectedId) return;
-            primaryMutation?.mutate(selectedId);
-            setSelectedId(undefined);
-            setIsPrimaryModalOpen(false);
+            if (modalsState.selectedId) {
+              primaryMutation(modalsState.selectedId);
+              closeModal("isPrimaryModalOpen");
+            }
           }}
         />
       )}
       {secondaryMutation && (
         <ConfirmModal
-          title={"Confirm action"}
-          content={"Are you sure you want to perform this action?"}
-          // Icon={Icon}
-          isOpen={isSecondaryModalOpen}
-          setIsOpen={setIsSecondaryModalOpen}
+          title="Confirm action"
+          content="Are you sure you want to perform this action?"
+          isOpen={modalsState.isSecondaryModalOpen}
+          setIsOpen={() => closeModal("isSecondaryModalOpen")}
           primaryAction={() => {
-            if (!selectedId) return;
-            secondaryMutation?.mutate(selectedId);
-            setSelectedId(undefined);
-            setIsSecondaryModalOpen(false);
+            if (modalsState.selectedId) {
+              secondaryMutation(modalsState.selectedId);
+              closeModal("isSecondaryModalOpen");
+            }
           }}
         />
       )}
