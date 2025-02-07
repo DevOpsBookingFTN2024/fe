@@ -64,7 +64,7 @@ export default function GuestsRatingsModal({
         ) : data?.length > 0 ? (
           <Scrollbar sx={{  width : "350px" }} >
             <Stack spacing={2} padding={2} >
-              {data.map((rating : any) => (
+              {data?.map((rating : any) => (
                 <Box
                   key={rating.id}
                   sx={{

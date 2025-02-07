@@ -1,7 +1,7 @@
 import { Box, Container, styled, useTheme } from "@mui/material";
 import useAuthStore from "@stores/authStore";
 import ScrollToTop from "@ui/shared/ScrollToTop";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Header from "./vertical/header/Header";
 import Sidebar from "./vertical/sidebar/Sidebar";
@@ -9,6 +9,7 @@ import Sidebar from "./vertical/sidebar/Sidebar";
 import { useCustomizerStore } from "@stores/customizerStore";
 import { useNotificationStore } from "@stores/notificationStore";
 import Notification from "@ui/Notification";
+import { useStomp } from "../../StompContext";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -30,8 +31,9 @@ const FullLayout: FC = () => {
   const { isOpen, data, closeNotification } = useNotificationStore();
   const { isCollapse, MiniSidebarWidth, isLayout } = useCustomizerStore();
   const theme = useTheme();
+  const { subscribe } = useStomp();
 
-  const { isValid } = useAuthStore((state) => state);
+  const { isValid, user } = useAuthStore((state) => state);
 
   // useEffect(() => {
   //   if (isOpen) {
@@ -42,6 +44,18 @@ const FullLayout: FC = () => {
   // if (!isValid) {
   //   return <Navigate to={"/login"} replace={true} />;
   // }
+
+  useEffect(() => {
+    if (!isValid) return; 
+    const subscription = subscribe(
+      `/topic/notifications/${user?.username}}`,
+      (message) => {
+        console.log(message);
+      }
+    ) as any;
+
+    return () => subscription?.unsubscribe();
+  }, [isValid, subscribe, user?.username]);
 
   return (
     <ScrollToTop>
@@ -69,7 +83,7 @@ const FullLayout: FC = () => {
 
             <Notification
               isShowing={isOpen}
-              primaryText={data.primaryText??"Notification"}
+              primaryText={data.primaryText ?? "Notification"}
               secondaryText={data.secondaryText}
               isError={data.isError}
               closeNotification={closeNotification}

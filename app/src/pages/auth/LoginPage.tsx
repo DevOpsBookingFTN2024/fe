@@ -63,6 +63,7 @@ export default function LoginPage() {
       "auth/login",
       new URL(import.meta.env.VITE_USER_API_URL, window.location.origin)
     );
+
     const result = await fetch(baseUrl, {
       method: "POST",
       body: JSON.stringify(input),

@@ -60,7 +60,6 @@ export default function UserNotificationsForm() {
   });
 
   const submitNotificationsSettings = (newItem: any) => {
-    console.log(newItem)
     updateNotificationsMutation.mutate(newItem);
   };
 

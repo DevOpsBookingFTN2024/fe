@@ -7,6 +7,8 @@ import PageContainer from "@ui/container/PageContainer";
 import AppCard from "@ui/shared/AppCard";
 import Spinner from "@ui/view/spinner/Spinner";
 import AccommodationsList from "../../components/ui/shared/AccommodationsList";
+import { useEffect } from "react";
+import { useStomp } from "../../StompContext";
 
 const BCrumb = [
   {

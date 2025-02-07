@@ -64,12 +64,18 @@ export default function AccommodationDetailsPage() {
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={12} lg={6}>
                     <Carousel
-                      images={[
-                        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2",
-                        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2",
-                        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2",
-                        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2",
-                      ]}
+                      images={
+                        data?.accommodationDTO.photos?.length
+                          ? data?.accommodationDTO.photos.map(
+                              (photo) =>
+                                `${
+                                  import.meta.env.VITE_ACCOMMODATIONS_API_URL
+                                }photos/${photo.url}`
+                            )
+                          : [
+                              "https://via.placeholder.com/300x200?text=Accommodation+Image",
+                            ]
+                      }
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} lg={6}>
