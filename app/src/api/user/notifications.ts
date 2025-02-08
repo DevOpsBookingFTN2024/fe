@@ -2,7 +2,7 @@ import { get, put } from "@api/utils";
 
 const baseUrl = new URL(
   "notifications/",
-  new URL(import.meta.env.VITE_USER_API_URL, window.location.origin)
+  new URL(import.meta.env.VITE_NOTIFICATION_API_URL, window.location.origin)
 );
 
 export type ENotificationType =

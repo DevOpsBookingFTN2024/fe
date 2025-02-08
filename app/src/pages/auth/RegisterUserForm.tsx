@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { useNotificationStore } from "@stores/notificationStore";
 import CustomFormLabel from "@ui/forms/theme-elements/CustomFormLabel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
@@ -100,7 +100,10 @@ const RegisterUserForm = ({ role, setIsSuccessful }: RegisterUserProps) => {
     control,
     register,
     formState: { errors },
+    reset,
   } = useForm<RegisterInput>({ resolver: zodResolver(registerSchema) });
+
+  useEffect(() => reset(), []);
 
   const registerUser = async (input: RegisterInput) => {
     setLoading(true);
@@ -294,7 +297,7 @@ const RegisterUserForm = ({ role, setIsSuccessful }: RegisterUserProps) => {
         </LoadingButton>
       </Box>
       <Stack direction="row" spacing={1} mt={2} justifyContent="center">
-        <Typography variant="h6" fontWeight="300">
+        <Typography variant="h6" fontWeight="300" fontStyle={"italic"}>
           Already have an account?
         </Typography>
         <Typography

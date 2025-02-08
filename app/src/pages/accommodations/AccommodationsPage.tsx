@@ -21,6 +21,7 @@ const BCrumb = [
 ];
 const AccommodationsPage = () => {
   const { filter } = useAccommodationFilterStore();
+ 
 
   const {
     data: accommodations,

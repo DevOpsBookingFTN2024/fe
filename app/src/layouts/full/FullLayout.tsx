@@ -8,6 +8,7 @@ import Sidebar from "./vertical/sidebar/Sidebar";
 
 import { useCustomizerStore } from "@stores/customizerStore";
 import { useNotificationStore } from "@stores/notificationStore";
+import { useUserNotificationStore } from "@stores/userNotificationStore";
 import Notification from "@ui/Notification";
 import { useStomp } from "../../StompContext";
 
@@ -32,6 +33,7 @@ const FullLayout: FC = () => {
   const { isCollapse, MiniSidebarWidth, isLayout } = useCustomizerStore();
   const theme = useTheme();
   const { subscribe } = useStomp();
+  const { addData } = useUserNotificationStore();
 
   const { isValid, user } = useAuthStore((state) => state);
 
@@ -46,16 +48,16 @@ const FullLayout: FC = () => {
   // }
 
   useEffect(() => {
-    if (!isValid) return; 
     const subscription = subscribe(
-      `/topic/notifications/${user?.username}}`,
+      `/topic/notifications/${user?.username}`,
       (message) => {
         console.log(message);
+        addData(message);
       }
     ) as any;
 
     return () => subscription?.unsubscribe();
-  }, [isValid, subscribe, user?.username]);
+  }, [subscribe, user?.username]);
 
   return (
     <ScrollToTop>

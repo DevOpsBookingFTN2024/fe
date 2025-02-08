@@ -11,15 +11,17 @@ import {
   InputAdornment,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import useAuthStore from "@stores/authStore";
 import { useNotificationStore } from "@stores/notificationStore";
+import { useUserNotificationStore } from "@stores/userNotificationStore";
 import PageContainer from "@ui/container/PageContainer";
 import CustomFormLabel from "@ui/forms/theme-elements/CustomFormLabel";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { z } from "zod";
 
 const standardMaxLength = import.meta.env.VITE_STANDARD_FIELD_MAX_LENGTH;
@@ -53,6 +55,7 @@ export default function LoginPage() {
     control,
     formState: { errors },
   } = useForm<LoginInput>({ resolver: zodResolver(loginSchema) });
+  const { addData } = useUserNotificationStore();
 
   const navigate = useNavigate();
 
@@ -85,7 +88,7 @@ export default function LoginPage() {
       openNotification({
         isError: true,
         primaryText: "An error occurred",
-        secondaryText: await result.text(),
+        secondaryText: "Invalid username or password",
       });
       return;
     }
@@ -115,6 +118,35 @@ export default function LoginPage() {
     currentUserResponse.token = token;
     sessionStorage.setItem(USER_KEY, JSON.stringify(currentUserResponse));
     setUser(currentUserResponse);
+
+    try {
+      const notificationsUrl = new URL(
+        "notifications/unread",
+        new URL(
+          import.meta.env.VITE_NOTIFICATION_API_URL,
+          window.location.origin
+        )
+      );
+
+      const notificationsResult = await fetch(notificationsUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (notificationsResult.ok) {
+        const notifications = await notificationsResult.json();
+        console.log("Unread notifications:", notifications);
+        addData(notifications);
+      } else {
+        console.error("Failed to fetch unread notifications.");
+      }
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+
     navigate("/");
 
     return;
@@ -159,7 +191,7 @@ export default function LoginPage() {
           >
             <Card
               elevation={9}
-              sx={{ p: 4, zIndex: 1, width: "100%", maxWidth: "450px" }}
+              sx={{ p: 4, zIndex: 1, width: "100%", maxWidth: "550px" }}
             >
               {/* <Box display="flex" alignItems="center" justifyContent="center">
                 <Logo />
@@ -170,7 +202,7 @@ export default function LoginPage() {
                   onSubmit={handleSubmit(loginUser)}
                   // sx={{ mt: 1 }}
                 >
-                  <Stack>
+                  <Stack marginBottom={3}>
                     <Box>
                       <CustomFormLabel htmlFor="username">
                         {"Username"}
@@ -206,7 +238,6 @@ export default function LoginPage() {
                           <TextField
                             error={errors.password !== undefined}
                             helperText={errors.password?.message}
-                            margin="normal"
                             required
                             fullWidth
                             variant="outlined"
@@ -245,6 +276,61 @@ export default function LoginPage() {
                       {"Login"}
                     </Button>
                   </Box>
+
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mt={2}
+                    px={2}
+                  >
+                    <Typography
+                      component={Link}
+                      to="/"
+                      fontWeight={500}
+                      sx={{
+                        textDecoration: "none",
+                        color: "#3A75FC",
+                        "&:hover": {
+                          color: "#2B5FCC",
+                          textDecoration: "underline",
+                        },
+                      }}
+                    >
+                      ← Home
+                    </Typography>
+
+                    <Stack
+                      direction="row"
+                      spacing={0.5}
+                      alignItems="center"
+                      justifyContent={"end"}
+                      flex={1}
+                    >
+                      <Typography
+                        fontWeight={500}
+                        color="grey"
+                        sx={{ fontStyle: "italic" }}
+                      >
+                        New to Booking?
+                      </Typography>
+                      <Typography
+                        component={Link}
+                        to="/register"
+                        sx={{
+                          textDecoration: "none",
+                          color: "#3A75FC",
+                          "&:hover": {
+                            color: "#2B5FCC",
+                            textDecoration: "underline",
+                          },
+                        }}
+                      >
+                        Create an account
+                      </Typography>
+                    </Stack>
+                  </Stack>
                 </Box>
               </Box>
             </Card>

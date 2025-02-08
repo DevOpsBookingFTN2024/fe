@@ -1,4 +1,5 @@
 import {
+  getNotifications,
   notificationTypeMapping,
   UserNotification,
 } from "@api/user/notifications";
@@ -13,10 +14,19 @@ import {
   Typography,
 } from "@mui/material";
 import useAuthStore from "@stores/authStore";
+import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 
 const UserNotificationsPage = () => {
-  const { isGuest } = useAuthStore();
+  const { user } = useAuthStore();
+
+  const { data, refetch } = useQuery({
+    queryKey: ["notifications", user?.id],
+    queryFn: () => getNotifications(),
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+  });
 
   const renderItem = (notification: UserNotification) => {
     const typeInfo = notificationTypeMapping[notification.type] || {
@@ -110,8 +120,8 @@ const UserNotificationsPage = () => {
   return (
     <Box>
       <Grid container spacing={3}>
-        {mockNotifications?.length && mockNotifications.length > 0 ? (
-          mockNotifications.map((notification) => renderItem(notification))
+        {data?.length && data.length > 0 ? (
+          data.map((notification) => renderItem(notification))
         ) : (
           <>{renderEmptyList()}</>
         )}

@@ -1,66 +1,63 @@
 import {
-  IconButton,
-  Box,
   Badge,
+  Box,
   Button,
   Chip,
+  IconButton,
   Menu,
   MenuItem,
   Stack,
   Typography,
-  Divider,
 } from "@mui/material";
+import useAuthStore from "@stores/authStore";
+import { IconBellRinging } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
-import { IconBellRinging } from "@tabler/icons-react";
-import { useQuery } from "@tanstack/react-query";
-import useAuthStore from "@stores/authStore";
 // import { getUnreadNotifications } from "@api/user/user";
-import { useEffect, useState } from "react";
+import { notificationTypeMapping } from "@api/user/notifications";
+import { useUserNotificationStore } from "@stores/userNotificationStore";
 import Scrollbar from "@ui/custom-scroll/Scrollbar";
-import {
-  notificationTypeMapping,
-  UserNotification,
-} from "@api/user/notifications";
+import { useState } from "react";
 
-export const mockNotifications: UserNotification[] = [
-  {
-    id: 1,
-    recipient: "user1@example.com",
-    message:
-      "Your reservation request has been sent. Your reservation request has been sent.Your reservation request has been sent.",
-    type: "RESERVATION_REQUEST",
-    dateTime: new Date().toISOString(),
-    isRead: false,
-  },
-  {
-    id: 2,
-    recipient: "user2@example.com",
-    message: "Your reservation has been canceled.",
-    type: "RESERVATION_CANCELED",
-    dateTime: new Date().toISOString(),
-    isRead: true,
-  },
-  {
-    id: 3,
-    recipient: "user3@example.com",
-    message: "You received a new rating as a host.",
-    type: "HOST_RATED",
-    dateTime: new Date().toISOString(),
-    isRead: false,
-  },
-  {
-    id: 4,
-    recipient: "user4@example.com",
-    message: "Your accommodation has been rated.",
-    type: "ACCOMMODATION_RATED",
-    dateTime: new Date().toISOString(),
-    isRead: true,
-  },
-];
+// export const mockNotifications: UserNotification[] = [
+//   {
+//     id: 1,
+//     recipient: "user1@example.com",
+//     message:
+//       "Your reservation request has been sent. Your reservation request has been sent.Your reservation request has been sent.",
+//     type: "RESERVATION_REQUEST",
+//     dateTime: new Date().toISOString(),
+//     isRead: false,
+//   },
+//   {
+//     id: 2,
+//     recipient: "user2@example.com",
+//     message: "Your reservation has been canceled.",
+//     type: "RESERVATION_CANCELED",
+//     dateTime: new Date().toISOString(),
+//     isRead: true,
+//   },
+//   {
+//     id: 3,
+//     recipient: "user3@example.com",
+//     message: "You received a new rating as a host.",
+//     type: "HOST_RATED",
+//     dateTime: new Date().toISOString(),
+//     isRead: false,
+//   },
+//   {
+//     id: 4,
+//     recipient: "user4@example.com",
+//     message: "Your accommodation has been rated.",
+//     type: "ACCOMMODATION_RATED",
+//     dateTime: new Date().toISOString(),
+//     isRead: true,
+//   },
+// ];
 
 const UserNotifications = () => {
   const { user } = useAuthStore();
+  const { data: notifications, clearData } = useUserNotificationStore();
 
   const [anchorEl2, setAnchorEl2] = useState(null);
 
@@ -69,22 +66,9 @@ const UserNotifications = () => {
   };
 
   const handleClose2 = () => {
+    clearData();
     setAnchorEl2(null);
   };
-
-  const { data, refetch } = useQuery({
-    queryKey: ["unread_notifications", user?.id],
-    // queryFn: () => getUnreadNotifications(user?.id ?? 0),
-  });
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      refetch();
-    }, 10 * 60 * 1000); // 10 minutes in milliseconds
-
-    // Clear the interval when the component is unmounted
-    return () => clearInterval(intervalId);
-  }, [refetch]);
 
   return (
     <Box>
@@ -126,14 +110,14 @@ const UserNotifications = () => {
         >
           <Typography variant="h6">Notifications</Typography>
           <Chip
-            label={`${mockNotifications?.length || 0} new`}
+            label={`${notifications?.length || 0} new`}
             color="primary"
             size="small"
           />
         </Stack>
 
         <Scrollbar sx={{ height: "385px" }}>
-          {mockNotifications?.map((notification, index) => {
+          {notifications?.map((notification, index) => {
             const typeInfo = notificationTypeMapping[notification.type] || {
               label: notification.type.replace("_", " "), // Fallback label
               color: "default" as const, // Default color if type is not mapped

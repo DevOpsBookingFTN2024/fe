@@ -73,7 +73,7 @@ export default function UserNotificationsForm() {
               <Controller
                 name="isReservationRequestEnabled"
                 control={controlHost}
-                defaultValue={data?.isReservationRequestEnabled}
+                defaultValue={data?.isReservationRequestEnabled ?? false}
                 render={({ field: { onChange, value } }) => (
                   <FormControlLabel
                     control={
@@ -90,7 +90,7 @@ export default function UserNotificationsForm() {
               <Controller
                 name="isReservationCanceledEnabled"
                 control={controlHost}
-                defaultValue={data?.isReservationCanceledEnabled}
+                defaultValue={data?.isReservationCanceledEnabled ?? false}
                 render={({ field: { onChange, value } }) => (
                   <FormControlLabel
                     control={
@@ -107,7 +107,7 @@ export default function UserNotificationsForm() {
               <Controller
                 name="isHostRatedEnabled"
                 control={controlHost}
-                defaultValue={data?.isHostRatedEnabled}
+                defaultValue={data?.isHostRatedEnabled ?? false}
                 render={({ field: { onChange, value } }) => (
                   <FormControlLabel
                     control={
@@ -124,7 +124,7 @@ export default function UserNotificationsForm() {
               <Controller
                 name="isAccommodationRatedEnabled"
                 control={controlHost}
-                defaultValue={data?.isAccommodationRatedEnabled}
+                defaultValue={data?.isAccommodationRatedEnabled ?? false}
                 render={({ field: { onChange, value } }) => (
                   <FormControlLabel
                     control={
@@ -143,7 +143,7 @@ export default function UserNotificationsForm() {
             <Controller
               name="isReservationResponseEnabled"
               control={controlGuest}
-              defaultValue={data?.isReservationResponseEnabled}
+              defaultValue={data?.isReservationResponseEnabled ?? false}
               render={({ field: { onChange, value } }) => (
                 <FormControlLabel
                   control={
