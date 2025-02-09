@@ -1,14 +1,16 @@
-import { FC, useEffect } from "react";
-import { styled, Container, Box, useTheme } from "@mui/material";
-import { Navigate, Outlet } from "react-router-dom";
-import Header from "./vertical/header/Header";
-import Sidebar from "./vertical/sidebar/Sidebar";
+import { Box, Container, styled, useTheme } from "@mui/material";
 import useAuthStore from "@stores/authStore";
 import ScrollToTop from "@ui/shared/ScrollToTop";
+import { FC, useEffect } from "react";
+import { Outlet } from "react-router-dom";
+import Header from "./vertical/header/Header";
+import Sidebar from "./vertical/sidebar/Sidebar";
 
-import Notification from "@ui/Notification";
-import { useNotificationStore } from "@stores/notificationStore";
 import { useCustomizerStore } from "@stores/customizerStore";
+import { useNotificationStore } from "@stores/notificationStore";
+import { useUserNotificationStore } from "@stores/userNotificationStore";
+import Notification from "@ui/Notification";
+import { useStomp } from "../../StompContext";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -30,8 +32,10 @@ const FullLayout: FC = () => {
   const { isOpen, data, closeNotification } = useNotificationStore();
   const { isCollapse, MiniSidebarWidth, isLayout } = useCustomizerStore();
   const theme = useTheme();
+  const { subscribe, isConnected } = useStomp();
+  const { addData } = useUserNotificationStore();
 
-  const { isValid } = useAuthStore((state) => state);
+  const { isValid, user } = useAuthStore((state) => state);
 
   // useEffect(() => {
   //   if (isOpen) {
@@ -42,6 +46,18 @@ const FullLayout: FC = () => {
   // if (!isValid) {
   //   return <Navigate to={"/login"} replace={true} />;
   // }
+
+  useEffect(() => {
+    if (isConnected) {
+      const subscription = subscribe(
+        `/topic/notifications/${user?.username}`,
+        (message) => {
+          addData(message);
+        }
+      ) as any;
+      return () => subscription?.unsubscribe();
+    }
+  }, [subscribe, user?.username, isConnected]);
 
   return (
     <ScrollToTop>
@@ -69,7 +85,7 @@ const FullLayout: FC = () => {
 
             <Notification
               isShowing={isOpen}
-              primaryText={data.primaryText??"Notification"}
+              primaryText={data.primaryText ?? "Notification"}
               secondaryText={data.secondaryText}
               isError={data.isError}
               closeNotification={closeNotification}

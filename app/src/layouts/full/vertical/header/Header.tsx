@@ -12,7 +12,7 @@ import { IconMenu2 } from "@tabler/icons-react";
 import Profile from "./Profile";
 import { useCustomizerStore } from "@stores/customizerStore";
 import Navigation from "./Navigation";
-import Notifications from "./Notification";
+import UserNotifications from "./UserNotifications";
 import useAuthStore from "@stores/authStore";
 
 const Header = () => {
@@ -58,7 +58,7 @@ const Header = () => {
         <Box flexGrow={1} />
         <Stack spacing={1} direction="row" alignItems="center">
           <Navigation />
-          <Notifications />
+          <UserNotifications />
           {isValid && <Profile />}
         </Stack>
       </ToolbarStyled>
