@@ -32,7 +32,7 @@ const FullLayout: FC = () => {
   const { isOpen, data, closeNotification } = useNotificationStore();
   const { isCollapse, MiniSidebarWidth, isLayout } = useCustomizerStore();
   const theme = useTheme();
-  const { subscribe } = useStomp();
+  const { subscribe, isConnected } = useStomp();
   const { addData } = useUserNotificationStore();
 
   const { isValid, user } = useAuthStore((state) => state);
@@ -48,16 +48,16 @@ const FullLayout: FC = () => {
   // }
 
   useEffect(() => {
-    const subscription = subscribe(
-      `/topic/notifications/${user?.username}`,
-      (message) => {
-        console.log(message);
-        addData(message);
-      }
-    ) as any;
-
-    return () => subscription?.unsubscribe();
-  }, [subscribe, user?.username]);
+    if (isConnected) {
+      const subscription = subscribe(
+        `/topic/notifications/${user?.username}`,
+        (message) => {
+          addData(message);
+        }
+      ) as any;
+      return () => subscription?.unsubscribe();
+    }
+  }, [subscribe, user?.username, isConnected]);
 
   return (
     <ScrollToTop>

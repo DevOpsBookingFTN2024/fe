@@ -6,7 +6,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers-pro/LocalizationProvid
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import "dayjs/locale/de";
 import "./App.css";
-import { useEffect } from "react";
 
 function App() {
   const theme = ThemeSettings();

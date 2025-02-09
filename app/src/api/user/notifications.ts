@@ -48,6 +48,10 @@ export function updateNotificationSettingsHost(input: InputNotificationHost) {
   return put(new URL("host/update", baseUrl), JSON.stringify(input));
 }
 
+export function readNotifications() {
+  return put(new URL("read-unread", baseUrl), JSON.stringify({}));
+}
+
 export function updateNotificationSettingsGuest(input: InputNotificationGuest) {
   return put(new URL("guest/update", baseUrl), JSON.stringify(input));
 }

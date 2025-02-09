@@ -91,7 +91,7 @@ export function searchAccommodations(
 }
 
 export function getAccommodationById(id: string): Promise<AccommodationDTO> {
-  return get(new URL(id, baseUrl));
+  return get(new URL("host/" + id, baseUrl));
 }
 
 export function getAccommodationsByHost(

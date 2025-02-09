@@ -1,3 +1,4 @@
+import { notificationTypeMapping } from "@api/user/notifications";
 import {
   Badge,
   Box,
@@ -9,54 +10,15 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import useAuthStore from "@stores/authStore";
-import { IconBellRinging } from "@tabler/icons-react";
-import dayjs from "dayjs";
-import { Link } from "react-router-dom";
-// import { getUnreadNotifications } from "@api/user/user";
-import { notificationTypeMapping } from "@api/user/notifications";
 import { useUserNotificationStore } from "@stores/userNotificationStore";
+import { IconBellRinging } from "@tabler/icons-react";
 import Scrollbar from "@ui/custom-scroll/Scrollbar";
+import dayjs from "dayjs";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
-// export const mockNotifications: UserNotification[] = [
-//   {
-//     id: 1,
-//     recipient: "user1@example.com",
-//     message:
-//       "Your reservation request has been sent. Your reservation request has been sent.Your reservation request has been sent.",
-//     type: "RESERVATION_REQUEST",
-//     dateTime: new Date().toISOString(),
-//     isRead: false,
-//   },
-//   {
-//     id: 2,
-//     recipient: "user2@example.com",
-//     message: "Your reservation has been canceled.",
-//     type: "RESERVATION_CANCELED",
-//     dateTime: new Date().toISOString(),
-//     isRead: true,
-//   },
-//   {
-//     id: 3,
-//     recipient: "user3@example.com",
-//     message: "You received a new rating as a host.",
-//     type: "HOST_RATED",
-//     dateTime: new Date().toISOString(),
-//     isRead: false,
-//   },
-//   {
-//     id: 4,
-//     recipient: "user4@example.com",
-//     message: "Your accommodation has been rated.",
-//     type: "ACCOMMODATION_RATED",
-//     dateTime: new Date().toISOString(),
-//     isRead: true,
-//   },
-// ];
 
 const UserNotifications = () => {
-  const { user } = useAuthStore();
   const { data: notifications, clearData } = useUserNotificationStore();
 
   const [anchorEl2, setAnchorEl2] = useState(null);
