@@ -45,7 +45,6 @@ export default function AccommodationSearch() {
         value={value}
         localeText={{ start: "Check-in", end: "Check-out" }}
         onChange={(newValue) => {
-          console.log(newValue);
           setValue(newValue);
         }}
       />

@@ -387,7 +387,6 @@ export default function AccommodationModal() {
                       multiple
                       value={field.value}
                       onChange={(e) => {
-                        console.log(e.target.value);
                         field.onChange(e.target.value);
                       }}
                       input={

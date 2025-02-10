@@ -6,6 +6,7 @@ import LoginPage from "@pages/auth/LoginPage";
 import RegisterPage from "@pages/auth/RegisterPage";
 import AccommodationAvailabilityPage from "@pages/my-accommodations/availability/AccommodationAvailabilityPage";
 import MyAccommodationsPage from "@pages/my-accommodations/MyAccommodationsPage";
+import UserNotificationsPage from "@pages/notifications/UserNotificationsPage";
 import ReservationsPage from "@pages/reservations/ReservationsPage";
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
@@ -83,6 +84,12 @@ const browserConfig = createBrowserRouter([
         id: "user-profile",
         path: "/user-profile",
         element: <AccountSettingsPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        id: "notifications",
+        path: "/notifications",
+        element: <UserNotificationsPage />,
         errorElement: <ErrorPage />,
       },
       // {

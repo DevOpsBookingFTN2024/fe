@@ -91,36 +91,7 @@ export function searchAccommodations(
 }
 
 export function getAccommodationById(id: string): Promise<AccommodationDTO> {
-  // return get(new URL(id, baseUrl));
-  return Promise.resolve({
-    accommodationDTO: {
-      id,
-      name: "Ocean View Apartment",
-      address: "123 Seaside Avenue",
-      city: "Miami",
-      country: "USA",
-      approvalStrategy: "MANUAL",
-      pricingStrategy: "PER_UNIT",
-      facilities: [
-        { name: "WiFi" },
-        { name: "Pool" },
-        { name: "Air Conditioning" },
-      ],
-      maximumGuests: 4,
-      minimumGuests: 1,
-      photos: [
-        { url: "https://example.com/photo1.jpg" },
-        { url: "https://example.com/photo2.jpg" },
-      ],
-      host: "testuser1",
-      hostScore: 4.8,
-    },
-    pricePerGuest: undefined,
-    pricePerUnit: 120,
-    priceAll: 120,
-    averageAccommodationScore: 4.5,
-    averageHostScore: 4.7,
-  });
+  return get(new URL("host/" + id, baseUrl));
 }
 
 export function getAccommodationsByHost(

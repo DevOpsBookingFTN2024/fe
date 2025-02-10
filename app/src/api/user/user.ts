@@ -38,6 +38,7 @@ export function changePassword(request: PasswordUpdateRequest) {
   return put(new URL("change-password", baseUrl), JSON.stringify(request));
 }
 
+
 export function updateUser(input: InputUser) {
   return put(new URL("update", baseUrl), JSON.stringify(input));
 }

@@ -10,7 +10,7 @@ import {
   Chip,
   Divider,
   Grid,
-  Typography
+  Typography,
 } from "@mui/material";
 import useAuthStore from "@stores/authStore";
 import { IconSlash } from "@tabler/icons-react";
@@ -20,8 +20,8 @@ import { useState } from "react";
 interface Props {
   reservations?: Reservation[];
   type?: "ACTIVE" | "PENDING" | "HISTORY" | "APPROVAL";
-  primaryMutation?: (id: string) => void;
-  secondaryMutation?: (id: string) => void;
+  primaryMutation?: any;
+  secondaryMutation?: any;
 }
 
 const ReservationsList = ({
@@ -45,7 +45,6 @@ const ReservationsList = ({
   const closeModal = (modal: keyof typeof modalsState) => {
     setModalsState((prev) => ({ ...prev, [modal]: false, selectedId: "" }));
   };
-
 
   const renderActions = (reservation: Reservation) => {
     if (type === "ACTIVE" || type === "PENDING") {
