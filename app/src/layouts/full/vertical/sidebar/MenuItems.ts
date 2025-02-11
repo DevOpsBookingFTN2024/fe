@@ -1,5 +1,7 @@
-import QueryStatsIcon from "@mui/icons-material/QueryStats";
+import ApartmentIcon from "@mui/icons-material/Apartment";
+import SearchIcon from "@mui/icons-material/Search";
 import { uniqueId } from "lodash";
+import EventSeatIcon from "@mui/icons-material/EventSeat";
 
 interface MenuitemsType {
   [x: string]: any;
@@ -17,8 +19,6 @@ interface MenuitemsType {
   external?: boolean;
 }
 
-import DashboardCustomizeOutlinedIcon from "@mui/icons-material/DashboardCustomizeOutlined";
-
 const Menuitems = () =>
   [
     {
@@ -28,7 +28,7 @@ const Menuitems = () =>
     {
       id: uniqueId(),
       title: "Home",
-      icon: DashboardCustomizeOutlinedIcon,
+      icon: SearchIcon,
       href: "/",
     },
     {
@@ -38,13 +38,13 @@ const Menuitems = () =>
     {
       id: uniqueId(),
       title: "My accommodations",
-      icon: QueryStatsIcon,
+      icon: ApartmentIcon,
       href: "/my-accommodations",
     },
     {
       id: uniqueId(),
       title: "Reservations",
-      icon: QueryStatsIcon,
+      icon: EventSeatIcon,
       href: "/reservations",
     },
   ] as MenuitemsType[];

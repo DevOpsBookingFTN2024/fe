@@ -40,7 +40,7 @@ export const Profile = () => {
           <Avatar src={ProfileImg} alt={ProfileImg} />
 
           <Box>
-            <Typography variant="h6" color={"white"}>
+            <Typography variant="h6" color={"black"}>
               {user?.username}
             </Typography>
           </Box>

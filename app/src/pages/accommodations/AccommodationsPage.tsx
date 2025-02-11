@@ -7,8 +7,6 @@ import PageContainer from "@ui/container/PageContainer";
 import AppCard from "@ui/shared/AppCard";
 import Spinner from "@ui/view/spinner/Spinner";
 import AccommodationsList from "../../components/ui/shared/AccommodationsList";
-import { useEffect } from "react";
-import { useStomp } from "../../StompContext";
 
 const BCrumb = [
   {
@@ -21,7 +19,6 @@ const BCrumb = [
 ];
 const AccommodationsPage = () => {
   const { filter } = useAccommodationFilterStore();
- 
 
   const {
     data: accommodations,
@@ -40,7 +37,6 @@ const AccommodationsPage = () => {
       title="Accommodations List"
       description="this is Accommodations List page"
     >
-      {/* breadcrumb */}
       <Breadcrumb title="Accommodations" items={BCrumb} />
       <AppCard>
         <Box p={5} flexGrow={1}>

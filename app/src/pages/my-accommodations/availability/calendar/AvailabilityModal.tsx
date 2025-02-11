@@ -75,14 +75,6 @@ export default function AvailabilityModal() {
       maxWidth="xs"
     >
       <DialogContent>
-        {/*           
-          <Typography mb={3} variant="subtitle2">
-            {!update
-              ? "To add Event kindly fillup the title and choose the event color and press the add button"
-              : "To Edit/Update Event kindly change the title and choose the event color and press the update button"}
-            {slot?.title}
-          </Typography> */}
-
         <Box component="form" sx={{ flexGrow: 1 }}>
           <input
             type="hidden"
@@ -115,8 +107,13 @@ export default function AvailabilityModal() {
                 render={({ field: { value, onChange, ...props } }) => (
                   <DatePicker
                     sx={{ width: "100%" }}
+                    disabled={item?.isReserved}
                     label={"Date from"}
-                    value={value ? dayjs.utc(value) : undefined}
+                    value={
+                      value
+                        ? dayjs.utc(value).tz("Europe/Paris").endOf("day").utc()
+                        : undefined
+                    }
                     slotProps={{
                       textField: {
                         variant: "outlined",
@@ -126,7 +123,11 @@ export default function AvailabilityModal() {
                       },
                     }}
                     onChange={(newValue) =>
-                      onChange(newValue == null ? null : newValue.utc())
+                      onChange(
+                        newValue
+                          ? newValue.tz("Europe/Paris").endOf("day").toDate()
+                          : null
+                      )
                     }
                     timezone="Europe/Paris"
                     {...props}
@@ -143,8 +144,13 @@ export default function AvailabilityModal() {
                 render={({ field: { value, onChange, ...props } }) => (
                   <DatePicker
                     sx={{ width: "100%" }}
+                    disabled={item?.isReserved}
                     label={"Date to"}
-                    value={value ? dayjs.utc(value) : undefined}
+                    value={
+                      value
+                        ? dayjs.utc(value).tz("Europe/Paris").endOf("day").utc()
+                        : undefined
+                    }
                     slotProps={{
                       textField: {
                         variant: "outlined",
@@ -154,7 +160,11 @@ export default function AvailabilityModal() {
                       },
                     }}
                     onChange={(newValue) =>
-                      onChange(newValue == null ? null : newValue.utc())
+                      onChange(
+                        newValue
+                          ? newValue.tz("Europe/Paris").endOf("day").toDate()
+                          : null
+                      )
                     }
                     timezone="Europe/Paris"
                     {...props}
@@ -171,12 +181,12 @@ export default function AvailabilityModal() {
                 render={({ field }) => (
                   <TextField
                     label={"Price per guest"}
+                    disabled={item?.isReserved}
                     fullWidth
                     type="number"
                     InputProps={{
                       inputProps: { min: 1 },
                     }}
-                    disabled={mutation.isPending}
                     error={!!errors.pricePerGuest}
                     helperText={errors.pricePerGuest?.message}
                     placeholder={"Price per guest"}
@@ -201,7 +211,7 @@ export default function AvailabilityModal() {
                     InputProps={{
                       inputProps: { min: 1 },
                     }}
-                    disabled={mutation.isPending}
+                    disabled={mutation.isPending || item?.isReserved}
                     error={!!errors.pricePerUnit}
                     helperText={errors.pricePerUnit?.message}
                     placeholder={"Price per unit"}
@@ -227,13 +237,13 @@ export default function AvailabilityModal() {
         >
           Cancel
         </Button>
-        {isUpdate && (
+        {isUpdate && item?.isAvailable && (
           <Button
             onClick={() => {
               setValue("isAvailable", false);
               handleSubmit(saveAccommodation)();
             }}
-            disabled={mutation.isPending}
+            disabled={mutation.isPending || item.isReserved}
             variant="contained"
             color="error"
           >
@@ -244,29 +254,11 @@ export default function AvailabilityModal() {
           color="primary"
           variant="contained"
           onClick={handleSubmit(saveAccommodation)}
+          disabled={item?.isReserved}
         >
           Save
         </Button>
       </DialogActions>
-      {/* <Button onClick={handleClose}>Cancel</Button>
-
-          {update ? (
-            <Button
-              type="submit"
-              color="error"
-              variant="contained"
-              onClick={() => deleteHandler(update)}
-            >
-              Delete
-            </Button>
-          ) : (
-            ""
-          )}
-          <Button type="submit" disabled={!title} variant="contained">
-            {update ? "Update Event" : "Add Event"}
-          </Button>
-        </DialogActions>
-      </form> */}
     </Dialog>
   );
 }

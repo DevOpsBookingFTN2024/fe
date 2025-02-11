@@ -41,8 +41,10 @@ const AccommodationsList = ({ accommodations, isEdit }: Props) => {
 
   const deleteMutation = useMutation({
     mutationFn: deleteAccommodation,
-    onSuccess: () =>
-      invalidateAllQueries(queryClient, "item.accommodationDTOs"),
+    onSuccess: () => {
+      invalidateAllQueries(queryClient, "my_accommodations");
+      invalidateAllQueries(queryClient, "accommodations");
+    },
   });
 
   const renderItem = (item: AccommodationDTO, index: number) => (
@@ -133,7 +135,7 @@ const AccommodationsList = ({ accommodations, isEdit }: Props) => {
                   Score
                 </Typography>
                 <Typography variant="h5" color="primary">
-                  {item.averageAccommodationScore}
+                  {item.averageAccommodationScore.toFixed(2)}
                 </Typography>
                 {/* <Typography variant="body2" color="textSecondary">
                   {5} reviews
@@ -169,7 +171,7 @@ const AccommodationsList = ({ accommodations, isEdit }: Props) => {
                   color="primary"
                   sx={{ ml: 1 }}
                 >
-                  {item.averageHostScore}
+                  {item.averageHostScore.toFixed(2)}
                 </Typography>
               </Box>
               <Box sx={{ textAlign: "right" }}>
@@ -262,9 +264,9 @@ const AccommodationsList = ({ accommodations, isEdit }: Props) => {
     <Grid item xs={12} lg={12} md={12} sm={12}>
       <Box textAlign="center" mt={6}>
         {/* <img src={emptyCart} alt="cart" width="200px" /> */}
-        <Typography variant="h2">No Accommodations</Typography>
+        <Typography variant="h2">Where do you want to go?</Typography>
         <Typography variant="h6" mb={3}>
-          No accommodations found. Please try again.
+          Search for accommodations
         </Typography>
       </Box>
     </Grid>
@@ -295,7 +297,7 @@ const AccommodationsList = ({ accommodations, isEdit }: Props) => {
       </Grid>
       <ConfirmModal
         title={"Delete Accommodation"}
-        content={"Are you sure you want to delete this item.accommodationDTO?"}
+        content={"Are you sure you want to delete this item?"}
         Icon={IconTrash}
         isOpen={isDeleteOpen}
         setIsOpen={setIsDeleteOpen}

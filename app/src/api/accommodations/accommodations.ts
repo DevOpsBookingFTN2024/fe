@@ -121,7 +121,7 @@ export function deleteAllAccommodationsByHost() {
 }
 
 export function getFacilities(): Promise<Facility[]> {
-  return get(new URL("facilities", baseUrl));
+  return get(new URL("allFacilities", baseUrl));
 }
 
 export function getSelectAccommodations(): Promise<SelectAccommodation[]> {

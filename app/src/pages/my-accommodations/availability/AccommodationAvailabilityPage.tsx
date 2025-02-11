@@ -14,14 +14,11 @@ import AvailabilityModal from "./calendar/AvailabilityModal";
 const BCrumb = [
   {
     to: "/",
-    title: "Home",
+    title: "Accommodation",
   },
   {
-    title: "Shop",
-    to: "/apps/ecommerce",
-  },
-  {
-    title: "detail",
+    title: "Availability",
+    to: "/",
   },
 ];
 

@@ -110,11 +110,14 @@ export default function AccommodationDetails({
                   Score
                 </Typography>
                 <Typography variant="h5" color="primary">
-                  {4.2}
+                  {item.averageAccommodationScore.toFixed(2)}
                 </Typography>
                 <Typography
                   onClick={() =>
-                    handleSeeRatings("ACCOMMODATION", item.accommodationDTO.id ?? "")
+                    handleSeeRatings(
+                      "ACCOMMODATION",
+                      item.accommodationDTO.id ?? ""
+                    )
                   }
                   sx={{
                     cursor: "pointer",
@@ -160,7 +163,7 @@ export default function AccommodationDetails({
                     color="primary"
                     sx={{ ml: 1 }}
                   >
-                    {item.averageHostScore}
+                    {item.averageHostScore.toFixed(2)}
                   </Typography>
                 </Box>
                 <Typography
@@ -181,7 +184,10 @@ export default function AccommodationDetails({
               </Stack>
 
               <Typography variant="h4" fontWeight={600} display={"flex"}>
-                Price <IconSlash />
+                {item.accommodationDTO.pricingStrategy == "PER_GUEST"
+                  ? item.pricePerGuest
+                  : item.pricePerUnit}
+                <IconSlash />
                 <Chip
                   label={
                     item.accommodationDTO.pricingStrategy == "PER_GUEST"
