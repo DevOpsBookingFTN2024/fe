@@ -20,6 +20,7 @@ export type InputAvailability = {
   dateFrom: Date;
   dateTo: Date;
   isAvailable?: boolean;
+  isReserved?: boolean;
   pricePerGuest: number;
   pricePerUnit: number;
 };

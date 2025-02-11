@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import queryClient, { invalidateAllQueries } from "../../query-client";
-import useNotifiedMutation from "@ui/hooks/useNotifiedMutation";
+import {
+  Facility,
+  InputAccommodation,
+} from "@api/accommodations/accommodations";
+import { InputFormData } from "@api/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Autocomplete,
   Box,
@@ -20,17 +22,15 @@ import {
   TextField,
   useTheme,
 } from "@mui/material";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { InputFormData } from "@api/utils";
-import { useLoaderData } from "react-router-dom";
-import { useAccommodationModalStore } from "@stores/accommodationStore";
-import {
-  Facility,
-  InputAccommodation,
-} from "@api/accommodations/accommodations";
-import accommodationSchema from "./schema";
-import ImageFilePicker from "@ui/shared/ImageFilePicker";
 import Grid from "@mui/material/Grid2";
+import { useAccommodationModalStore } from "@stores/accommodationStore";
+import useNotifiedMutation from "@ui/hooks/useNotifiedMutation";
+import ImageFilePicker from "@ui/shared/ImageFilePicker";
+import { useEffect, useMemo, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useLoaderData } from "react-router-dom";
+import queryClient, { invalidateAllQueries } from "../../query-client";
+import accommodationSchema from "./schema";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -43,6 +43,16 @@ const MenuProps = {
   },
 };
 
+const pricingStrategyLabels: Record<string, string> = {
+  PER_GUEST: "Per Guest",
+  PER_UNIT: "Per Unit",
+};
+
+const approvalStrategyLabels: Record<string, string> = {
+  MANUAL: "Manual Approval",
+  AUTOMATIC: "Automatic Approval",
+};
+
 export default function AccommodationModal() {
   const theme = useTheme();
   const { isOpen, item, closeModal, submitAction, shouldClose } =
@@ -53,56 +63,14 @@ export default function AccommodationModal() {
 
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const handleImageChange = (newImages: File[]) => {
-    setUploadedImages(newImages); // Update state with the new images
+    setUploadedImages(newImages);
   };
 
   const handleRemoveImage = (index: number) => {
     setUploadedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  //   const facilities = useLoaderData() as Facility[];
-  const facilities = [
-    {
-      id: "8c736793-8bb6-4195-b821-fbdece5abc6b",
-      name: "Wi-Fi",
-    },
-    {
-      id: "eb4c4bad-a94f-4e36-b3cd-d52bc726307f",
-      name: "Parking lot",
-    },
-    {
-      id: "33208e8f-c77f-42a9-8669-38fa629685c2",
-      name: "TV",
-    },
-    {
-      id: "34348434-5309-46a5-81fa-ea8b5eb09e51",
-      name: "Kitchen",
-    },
-    {
-      id: "009a96c0-5381-42ed-8cb2-a7e59476ccad",
-      name: "Air condition",
-    },
-    {
-      id: "cb50115a-7845-4e81-a3d0-99e8357573aa",
-      name: "Swimming pool",
-    },
-    {
-      id: "394772a3-4a19-4e9b-950f-2efa2e253a0f",
-      name: "Fitness center",
-    },
-    {
-      id: "1af6361b-b65d-48ca-b01a-11e4d9a07726",
-      name: "Terrace",
-    },
-    {
-      id: "b1f0acb1-5e25-4b6e-90cb-e460e5bf7807",
-      name: "Barbecue",
-    },
-    {
-      id: "caa99af1-4da7-4a6c-bbb9-a32a27fa4d37",
-      name: "Additional toilet",
-    },
-  ];
+  const facilities = useLoaderData() as Facility[];
 
   const {
     register,
@@ -323,19 +291,19 @@ export default function AccommodationModal() {
                 defaultValue={item?.pricingStrategy ?? undefined}
                 render={({ field: { onChange, value } }) => (
                   <Autocomplete
-                    onChange={(event, item) => {
-                      onChange(item);
-                    }}
-                    value={pricingStrategies.find((m) => m === value)}
+                    onChange={(event, newValue) => onChange(newValue)}
+                    value={pricingStrategies.find((m) => m === value) ?? ""}
                     options={pricingStrategies}
-                    getOptionLabel={(option) => option}
+                    getOptionLabel={(option) =>
+                      pricingStrategyLabels[option] || option
+                    }
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label={"Pricing Strategy"}
+                        label="Pricing Strategy"
                         margin="dense"
                         variant="outlined"
-                        error={errors.body?.pricingStrategy !== undefined}
+                        error={!!errors.body?.pricingStrategy}
                       />
                     )}
                   />
@@ -350,19 +318,19 @@ export default function AccommodationModal() {
                 defaultValue={item?.approvalStrategy ?? undefined}
                 render={({ field: { onChange, value } }) => (
                   <Autocomplete
-                    onChange={(event, item) => {
-                      onChange(item);
-                    }}
-                    value={approvalStrategies.find((m) => m === value)}
+                    onChange={(event, newValue) => onChange(newValue)}
+                    value={approvalStrategies.find((m) => m === value) ?? ""}
                     options={approvalStrategies}
-                    getOptionLabel={(option) => option}
+                    getOptionLabel={(option) =>
+                      approvalStrategyLabels[option] || option
+                    }
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label={"Approval strategy"}
+                        label="Approval Strategy"
                         margin="dense"
                         variant="outlined"
-                        error={errors.body?.approvalStrategy !== undefined}
+                        error={!!errors.body?.approvalStrategy}
                       />
                     )}
                   />
@@ -420,7 +388,7 @@ export default function AccommodationModal() {
                             fontWeight: theme.typography.fontWeightMedium,
                           }}
                         >
-                          {`(${facility.id}) ${facility.name}`}
+                          {facility.name}
                         </MenuItem>
                       ))}
                     </Select>

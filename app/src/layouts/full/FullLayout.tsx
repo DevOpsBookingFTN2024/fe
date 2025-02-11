@@ -57,7 +57,7 @@ const FullLayout: FC = () => {
       ) as any;
       return () => subscription?.unsubscribe();
     }
-  }, [subscribe, user?.username, isConnected]);
+  }, [ user?.username, isConnected]);
 
   return (
     <ScrollToTop>

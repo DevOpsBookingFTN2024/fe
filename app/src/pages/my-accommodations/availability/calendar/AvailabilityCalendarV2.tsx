@@ -92,6 +92,8 @@ const AvailabilityCalendarV2 = () => {
         accommodationId: accommodationId,
         dateFrom: event.start,
         dateTo: event.end,
+        isAvailable: event.resource.isAvailable,
+        isReserved: event.resource.isReserved,
         pricePerGuest: event.resource.pricePerGuest,
         pricePerUnit: event.resource.pricePerUnit,
       } as InputAvailability,
@@ -135,10 +137,12 @@ const AvailabilityCalendarV2 = () => {
               editEvent(slotInfo);
             } else {
               const endDate = new Date(slotInfo.end ?? new Date());
-              endDate.setDate(endDate.getDate() - 1);
+              endDate.setHours(23, 59, 0, 0);
+              const startDate = new Date(slotInfo.start ?? new Date());
+              startDate.setHours(23, 59, 0, 0);
 
               handleAddAvailability({
-                start: slotInfo.start,
+                start: startDate,
                 end: endDate,
               });
             }

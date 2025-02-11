@@ -15,14 +15,14 @@ const Welcome = () => {
     }
     setOpen(false);
   };
-  React.useEffect(() => {
-    // Update the document title using the browser API
-    const timer = setTimeout(() => {
-      handleClick();
-    }, 1500);
+  // React.useEffect(() => {
+  //   // Update the document title using the browser API
+  //   const timer = setTimeout(() => {
+  //     handleClick();
+  //   }, 1500);
 
-    return () => clearTimeout(timer);
-  }, []);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   return (
       <React.Fragment>

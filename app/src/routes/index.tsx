@@ -10,6 +10,8 @@ import UserNotificationsPage from "@pages/notifications/UserNotificationsPage";
 import ReservationsPage from "@pages/reservations/ReservationsPage";
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
+import queryClient from "../query-client";
+import { getFacilities } from "@api/accommodations/accommodations";
 // import AccommodationsPage from "@pages/acommodations/AccommodationsPage";
 
 const FullLayout = React.lazy(() => import("@layout/full/FullLayout"));
@@ -51,11 +53,11 @@ const browserConfig = createBrowserRouter([
                 index: true,
                 element: <MyAccommodationsPage />,
                 errorElement: <ErrorPage />,
-                // loader: () =>
-                //   queryClient.fetchQuery({
-                //     queryKey: ["facilities"],
-                //     queryFn: () => getFacilities(),
-                //   }),
+                loader: () =>
+                  queryClient.fetchQuery({
+                    queryKey: ["facilities"],
+                    queryFn: () => getFacilities(),
+                  }),
               },
 
               {

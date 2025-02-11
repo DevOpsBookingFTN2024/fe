@@ -15,14 +15,11 @@ import ConfirmReservationModal from "./ConfirmReservationModal";
 const BCrumb = [
   {
     to: "/",
-    title: "Home",
-  },
-  {
     title: "Accommodations",
-    to: "/",
   },
   {
-    title: "Detail",
+    title: "Details",
+    to: "/",
   },
 ];
 
@@ -37,8 +34,8 @@ export default function AccommodationDetailsPage() {
 
   return (
     <PageContainer
-      title="Accommodation availability"
-      description="this is AccommodationAvailability page"
+      title="Accommodation details"
+      description="this is Accommodation details page"
     >
       <Breadcrumb title="Accommodations details" items={BCrumb} />
       {isLoading ? (

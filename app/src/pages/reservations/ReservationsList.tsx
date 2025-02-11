@@ -124,7 +124,7 @@ const ReservationsList = ({
                 {reservation.accommodation.address},{" "}
                 {reservation.accommodation.city}
               </Typography>
-              <Box sx={{ textAlign: "right" }}>
+              {/* <Box sx={{ textAlign: "right" }}>
                 <Typography
                   mt={1}
                   variant="h6"
@@ -142,7 +142,7 @@ const ReservationsList = ({
                     size="small"
                   />
                 </Typography>
-              </Box>
+              </Box> */}
             </Box>
             <Box>
               <Typography variant="body1" display="flex" alignItems="center">
@@ -191,7 +191,7 @@ const ReservationsList = ({
           setIsOpen={() => closeModal("isPrimaryModalOpen")}
           primaryAction={() => {
             if (modalsState.selectedId) {
-              primaryMutation(modalsState.selectedId);
+              primaryMutation.mutate(modalsState.selectedId);
               closeModal("isPrimaryModalOpen");
             }
           }}
@@ -205,7 +205,7 @@ const ReservationsList = ({
           setIsOpen={() => closeModal("isSecondaryModalOpen")}
           primaryAction={() => {
             if (modalsState.selectedId) {
-              secondaryMutation(modalsState.selectedId);
+              secondaryMutation.mutate(modalsState.selectedId);
               closeModal("isSecondaryModalOpen");
             }
           }}

@@ -1,4 +1,7 @@
-import { notificationTypeMapping } from "@api/user/notifications";
+import {
+  notificationTypeMapping,
+  readNotifications,
+} from "@api/user/notifications";
 import {
   Badge,
   Box,
@@ -12,22 +15,26 @@ import {
 } from "@mui/material";
 import { useUserNotificationStore } from "@stores/userNotificationStore";
 import { IconBellRinging } from "@tabler/icons-react";
+import { useMutation } from "@tanstack/react-query";
 import Scrollbar from "@ui/custom-scroll/Scrollbar";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-
+import { data, Link } from "react-router-dom";
 
 const UserNotifications = () => {
   const { data: notifications, clearData } = useUserNotificationStore();
 
   const [anchorEl2, setAnchorEl2] = useState(null);
+  const readNotificationsMutation = useMutation({
+    mutationFn: readNotifications,
+  });
 
   const handleClick2 = (event: any) => {
     setAnchorEl2(event.currentTarget);
   };
 
   const handleClose2 = () => {
+    readNotificationsMutation.mutate();
     clearData();
     setAnchorEl2(null);
   };
@@ -45,7 +52,7 @@ const UserNotifications = () => {
         }}
         onClick={handleClick2}
       >
-        <Badge color="primary">
+        <Badge color="primary" badgeContent={notifications?.length}>
           <IconBellRinging size="21" stroke="1.5" />
         </Badge>
       </IconButton>
