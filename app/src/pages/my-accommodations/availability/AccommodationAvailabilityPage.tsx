@@ -29,12 +29,6 @@ export default function AccommodationAvailabilityPage() {
     queryKey: ["accommodation_details", accommodationId],
     queryFn: () => getAccommodationById(accommodationId ?? ""),
   });
-  const imageUrls = data?.accommodationDTO.photos.length
-    ? data?.accommodationDTO.photos.map(
-        (photo) =>
-          `${import.meta.env.VITE_ACCOMMODATIONS_API_URL}photos/${photo.url}`
-      )
-    : ["https://via.placeholder.com/350x250?text=No+Image+Available"];
 
   return (
     <PageContainer
@@ -58,7 +52,18 @@ export default function AccommodationAvailabilityPage() {
                 {/* ------------------------------------------- */}
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={12} lg={6}>
-                    <Carousel images={imageUrls} />
+                    <Carousel
+                      images={
+                        data?.accommodationDTO.photos?.length
+                          ? data?.accommodationDTO.photos.map(
+                              (photo) =>
+                                `${
+                                  import.meta.env.VITE_ACCOMMODATIONS_API_URL
+                                }photos/${photo.url}`
+                            )
+                          : ["https://placehold.co/300x200/png?text=No+image"]
+                      }
+                    />
                   </Grid>
                   <Grid item xs={12} sm={12} lg={6}>
                     <AccommodationDetails item={data} />

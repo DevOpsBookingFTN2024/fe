@@ -15,10 +15,13 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import useNotifiedMutation from "@ui/hooks/useNotifiedMutation";
-import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import queryClient, { invalidateAllQueries } from "../../../query-client";
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
 
+
+dayjs.extend(utc)
 export interface ConfirmModalProps {
   item: InputReservation;
   isOpen: boolean;

@@ -14,7 +14,7 @@ import useAuthStore from "@stores/authStore";
 import { IconPower } from "@tabler/icons-react";
 
 export const Profile = () => {
-  const { user, deleteUser } = useAuthStore((state) => state);
+  const { user, deleteUser, isValid } = useAuthStore((state) => state);
   const customizer = useCustomizerStore((state) => state);
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
   const hideMenu = lgUp
@@ -28,6 +28,8 @@ export const Profile = () => {
       sessionStorage.removeItem(USER_KEY);
     }
   };
+
+  if (!isValid) return <></>;
   return (
     <Box
       display={"flex"}
