@@ -83,7 +83,7 @@ const AccommodationsList = ({ accommodations, isEdit }: Props) => {
                   ? `${import.meta.env.VITE_ACCOMMODATIONS_API_URL}photos/${
                       item.accommodationDTO.photos[0].url
                     }`
-                  : "https://via.placeholder.com/300x200?text=Accommodation+Image"
+                  : "https://placehold.co/300x200/png?text=No+image"
               }
               alt={item.accommodationDTO.name}
             />

@@ -169,7 +169,7 @@ export default function LayoutAuth() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="h1" color="inherit">
-            Pravna informatika
+            Booking
           </Typography>
           <Box component="div" sx={{ ml: "auto" }}>
             <IconButton

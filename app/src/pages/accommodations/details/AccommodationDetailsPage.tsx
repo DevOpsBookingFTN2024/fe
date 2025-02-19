@@ -11,6 +11,7 @@ import Spinner from "@ui/view/spinner/Spinner";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import ConfirmReservationModal from "./ConfirmReservationModal";
+import useAuthStore from "@stores/authStore";
 
 const BCrumb = [
   {
@@ -24,6 +25,7 @@ const BCrumb = [
 ];
 
 export default function AccommodationDetailsPage() {
+  const { user } = useAuthStore();
   const { accommodationId } = useParams();
   const { data, isLoading } = useQuery({
     queryKey: ["accommodation_details", accommodationId],
@@ -52,12 +54,16 @@ export default function AccommodationDetailsPage() {
                 {/* ------------------------------------------- */}
                 {/* Carousel */}
                 {/* ------------------------------------------- */}
-                <Button
-                  sx={{ marginBottom: 3, marginRight: "auto" }}
-                  onClick={() => setIsCreateReservationOpen(true)}
-                >
-                  Create reservation
-                </Button>
+                {user?.roles && user?.roles.includes("ROLE_GUEST") ? (
+                  <Button
+                    sx={{ marginBottom: 3, marginRight: "auto" }}
+                    onClick={() => setIsCreateReservationOpen(true)}
+                  >
+                    Create reservation
+                  </Button>
+                ) : (
+                  <></>
+                )}
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={12} lg={6}>
                     <Carousel
@@ -69,9 +75,7 @@ export default function AccommodationDetailsPage() {
                                   import.meta.env.VITE_ACCOMMODATIONS_API_URL
                                 }photos/${photo.url}`
                             )
-                          : [
-                              "https://via.placeholder.com/300x200?text=Accommodation+Image",
-                            ]
+                          : ["https://placehold.co/300x200/png?text=No+image"]
                       }
                     />
                   </Grid>
@@ -85,16 +89,18 @@ export default function AccommodationDetailsPage() {
               {/* <ProductRelated /> */}
             </Grid>
           </Grid>
-          <ConfirmReservationModal
-            item={{
-              dateFrom: filter.startDate ?? new Date(),
-              dateTo: filter.endDate ?? new Date(),
-              numberOfGuests: filter.guestCount ?? 1,
-              accommodationId: data?.accommodationDTO.id,
-            }}
-            isOpen={isCreateReservationOpen}
-            setIsOpen={setIsCreateReservationOpen}
-          />
+          {user?.roles && user?.roles.includes("ROLE_GUEST") && (
+            <ConfirmReservationModal
+              item={{
+                dateFrom: filter.startDate ?? new Date(),
+                dateTo: filter.endDate ?? new Date(),
+                numberOfGuests: filter.guestCount ?? 1,
+                accommodationId: data?.accommodationDTO.id,
+              }}
+              isOpen={isCreateReservationOpen}
+              setIsOpen={setIsCreateReservationOpen}
+            />
+          )}
         </>
       )}
     </PageContainer>
