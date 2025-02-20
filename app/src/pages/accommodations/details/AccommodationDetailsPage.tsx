@@ -2,6 +2,7 @@ import { getAccommodationById } from "@api/accommodations/accommodations";
 import Breadcrumb from "@layout/full/shared/breadcrumb/Breadcrumb";
 import { Button, Grid } from "@mui/material";
 import { useAccommodationFilterStore } from "@stores/accommodationStore";
+import useAuthStore from "@stores/authStore";
 import { useQuery } from "@tanstack/react-query";
 import PageContainer from "@ui/container/PageContainer";
 import AccommodationDetails from "@ui/shared/AccommodationDetails";
@@ -11,7 +12,6 @@ import Spinner from "@ui/view/spinner/Spinner";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import ConfirmReservationModal from "./ConfirmReservationModal";
-import useAuthStore from "@stores/authStore";
 
 const BCrumb = [
   {
@@ -31,6 +31,7 @@ export default function AccommodationDetailsPage() {
     queryKey: ["accommodation_details", accommodationId],
     queryFn: () => getAccommodationById(accommodationId ?? ""),
   });
+
   const { filter } = useAccommodationFilterStore();
   const [isCreateReservationOpen, setIsCreateReservationOpen] = useState(false);
 

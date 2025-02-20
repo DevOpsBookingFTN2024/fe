@@ -48,6 +48,10 @@ export type Reservation = {
   reservationStatus: ReservationStatus;
 };
 
+export type HasSuccessfullyPassedDTO = {
+  result: boolean;
+};
+
 export type FilterReservation = {
   idAccommodation?: string;
 };
@@ -98,4 +102,19 @@ export function getPassedReservations(
   isGuest: boolean
 ): Promise<Reservation[]> {
   return get(addListFilterParams(new URL("past", getBaseUrl(isGuest)), filter));
+}
+
+export function getIsGuestHasSuccessfullyPassedReservationHost(host: string) {
+  return get(new URL(`has-successfully-passed-host/${host}`, baseUrlGuest));
+}
+
+export function getIsGuestHasSuccessfullyPassedReservationAccommodation(
+  accommodationId: string
+): Promise<HasSuccessfullyPassedDTO> {
+  return get(
+    new URL(
+      `has-successfully-passed-accommodation/${accommodationId}`,
+      baseUrlGuest
+    )
+  );
 }

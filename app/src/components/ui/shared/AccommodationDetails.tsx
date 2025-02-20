@@ -1,4 +1,5 @@
 import { AccommodationDTO } from "@api/accommodations/accommodations";
+import { getIsGuestHasSuccessfullyPassedReservationAccommodation } from "@api/accommodations/reservations";
 import {
   Box,
   Button,
@@ -19,6 +20,7 @@ import {
   IconSlash,
   IconUser,
 } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 export interface AccommodationDetailsProps {
@@ -30,6 +32,14 @@ export default function AccommodationDetails({
 }: AccommodationDetailsProps) {
   const theme = useTheme();
   const { user, isGuest } = useAuthStore();
+
+  const { data: hasRatingPermissions } = useQuery({
+    queryKey: ["rating_permissions", item?.accommodationDTO.id, user?.id],
+    queryFn: () =>
+      getIsGuestHasSuccessfullyPassedReservationAccommodation(
+        item?.accommodationDTO.id ?? ""
+      ),
+  });
 
   const [modalsState, setModalsState] = useState({
     isRatingModalOpen: false,
@@ -229,7 +239,7 @@ export default function AccommodationDetails({
             </Stack>
             <Divider />
 
-            {isGuest && (
+            {isGuest && hasRatingPermissions && (
               <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
                 <Button
                   onClick={() =>
