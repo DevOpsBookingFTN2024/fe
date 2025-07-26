@@ -85,9 +85,10 @@ const axiosClient = () => {
             return instance(originalConfig);
           } catch (error) {
             handleError<string>(error as AxiosError<string>);
+            // Clear both storages and redirect to login
             localStorage.removeItem(USER_KEY);
             sessionStorage.removeItem(USER_KEY);
-            window.location.reload();
+            window.location.href = '/login';
           }
         }
       }

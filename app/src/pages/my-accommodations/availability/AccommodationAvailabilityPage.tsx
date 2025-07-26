@@ -30,6 +30,12 @@ export default function AccommodationAvailabilityPage() {
     queryFn: () => getAccommodationById(accommodationId ?? ""),
   });
 
+  console.log(data?.accommodationDTO.photos?.map(
+                              (photo) =>
+                                `${
+                                  import.meta.env.VITE_ACCOMMODATIONS_API_URL
+                                }photos/${photo.url}`
+                            ))
   return (
     <PageContainer
       title="Accommodation availability"
@@ -72,7 +78,7 @@ export default function AccommodationAvailabilityPage() {
               </ChildCard>
             </Grid>
             <Grid item xs={12} sm={12} lg={12}>
-              <AvailabilityCalendarV2 />
+              <AvailabilityCalendarV2 pricingStrategy={data?.accommodationDTO.pricingStrategy} />
             </Grid>
           </Grid>
           <AvailabilityModal />

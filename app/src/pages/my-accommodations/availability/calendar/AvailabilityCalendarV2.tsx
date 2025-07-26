@@ -27,7 +27,11 @@ type EvType = {
   resource?: any;
 };
 
-const AvailabilityCalendarV2 = () => {
+interface AvailabilityCalendarV2Props {
+  pricingStrategy?: "PER_GUEST" | "PER_UNIT";
+}
+
+const AvailabilityCalendarV2 = ({ pricingStrategy }: AvailabilityCalendarV2Props) => {
   const openAvailibilityModal = useAvailabilityModalStore(
     (state) => state.openModal
   );
@@ -68,7 +72,8 @@ const AvailabilityCalendarV2 = () => {
       } as InputAvailability,
       createAvailability,
       true,
-      false
+      false,
+      pricingStrategy
     );
 
   const eventColors = (event: EvType) => ({
@@ -99,7 +104,8 @@ const AvailabilityCalendarV2 = () => {
       } as InputAvailability,
       updateAvailability,
       true,
-      true
+      true,
+      pricingStrategy
     );
   };
 

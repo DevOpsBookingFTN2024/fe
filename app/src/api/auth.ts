@@ -37,13 +37,15 @@ export function isTokenValid(token?: any) {
   }
 
   const isValid = new Date(token["exp"] * 1000) > new Date();
-  if (!isValid) {
-    localStorage.removeItem(USER_KEY);
-  }
+  // Don't automatically clear localStorage here - let the auth store handle it
+  // This allows for proper session management across tabs
   return isValid;
 }
 
 export function getUserFromStorage() {
-  const user = sessionStorage.getItem(USER_KEY);
+  // Prioritize localStorage for cross-tab persistence, fallback to sessionStorage
+  const localUser = localStorage.getItem(USER_KEY);
+  const sessionUser = sessionStorage.getItem(USER_KEY);
+  const user = localUser || sessionUser;
   return user ? (JSON.parse(user) as User) : null;
 }
