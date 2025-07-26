@@ -25,10 +25,12 @@ import { useState } from "react";
 
 export interface AccommodationDetailsProps {
   item?: AccommodationDTO;
+  onRatingUpdate?: () => void;
 }
 
 export default function AccommodationDetails({
   item,
+  onRatingUpdate,
 }: AccommodationDetailsProps) {
   const theme = useTheme();
   const { user, isGuest } = useAuthStore();
@@ -326,6 +328,7 @@ export default function AccommodationDetails({
         isOpen={modalsState.isRatingModalOpen}
         setIsOpen={() => closeModal("isRatingModalOpen")}
         ratingType={modalsState.ratingType}
+        onRatingSuccess={onRatingUpdate}
       />
       <GuestsRatingsModal
         ratingId={modalsState.ratingId}

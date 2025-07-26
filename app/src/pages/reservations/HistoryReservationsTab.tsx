@@ -15,12 +15,15 @@ export default function HistoryReservationsTab({
 }: HistoryReservationTabProps) {
   const { filter, updateFilterAccommodationId } =
     usePassedReservationFilterStore();
-  const { isGuest } = useAuthStore();
+  const { isGuest, user } = useAuthStore();
   const { data, isLoading } = useQuery({
-    queryKey: ["history_reservations", "reservations", filter],
+    queryKey: ["history_reservations", "reservations", filter, user?.id],
     queryFn: async () => {
       return getPassedReservations(filter, isGuest);
     },
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   return (

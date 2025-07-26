@@ -46,8 +46,11 @@ const Profile = () => {
   };
 
   const handleLogout = () => {
-    // deleteUser() now handles clearing both storages
-    deleteUser();
+    {
+      deleteUser();
+      localStorage.removeItem(USER_KEY);
+      sessionStorage.removeItem(USER_KEY);
+    }
   };
 
   return (

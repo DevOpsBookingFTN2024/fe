@@ -24,9 +24,9 @@ export default function PendingReservationsTab({
 }: PendingReservationTabProps) {
   const { filter, updateFilterAccommodationId } =
     usePendingReservationFilterStore();
-  const { isGuest } = useAuthStore();
+  const { isGuest, user } = useAuthStore();
   const { data, isLoading } = useQuery({
-    queryKey: ["pending_reservations", "reservations", filter],
+    queryKey: ["pending_reservations", "reservations", filter, user?.id],
     queryFn: async () => {
       return getPendingReservations(filter, isGuest);
     },
@@ -74,7 +74,7 @@ export default function PendingReservationsTab({
           <ReservationsList
             reservations={data}
             type={isGuest ? "PENDING" : "APPROVAL"}
-            primaryMutation={approveMutation}
+            primaryMutation={isGuest ? cancelMutation : approveMutation}
             secondaryMutation={isGuest ? undefined : cancelMutation}
           />
         ) : (

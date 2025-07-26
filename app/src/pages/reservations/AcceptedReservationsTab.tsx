@@ -22,9 +22,11 @@ export default function AcceptedReservationsTab({
   const { filter, updateFilterAccommodationId } =
     useAcceptedReservationFilterStore();
 
+  const { user } = useAuthStore();
+
   const { isGuest } = useAuthStore();
   const { data, isLoading } = useQuery({
-    queryKey: ["accepted_reservations", "reservations", filter],
+    queryKey: ["accepted_reservations", "reservations", filter, user?.id],
     queryFn: async () => {
       return getAcceptedReservations(filter, isGuest);
     },
