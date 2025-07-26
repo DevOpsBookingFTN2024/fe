@@ -30,6 +30,7 @@ export interface RatingModalProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   ratingType: "HOST" | "ACCOMMODATION";
+  onRatingSuccess?: () => void;
 }
 
 export default function RatingModal({
@@ -37,6 +38,7 @@ export default function RatingModal({
   setIsOpen,
   ratingId,
   ratingType,
+  onRatingSuccess,
 }: RatingModalProps) {
   const closeModal = () => {
     if (!isLoading) setIsOpen(false);
@@ -74,7 +76,9 @@ export default function RatingModal({
     onSuccess: () => {
       invalidateAllQueries(queryClient, "rating");
       invalidateAllQueries(queryClient, "guests_rating");
+      invalidateAllQueries(queryClient, "accommodation_details");
       refetch();
+      onRatingSuccess?.();
     },
     showSuccessNotification: false,
   });
@@ -87,7 +91,9 @@ export default function RatingModal({
     onSuccess: () => {
       invalidateAllQueries(queryClient, "rating");
       invalidateAllQueries(queryClient, "guests_rating");
+      invalidateAllQueries(queryClient, "accommodation_details");
       refetch();
+      onRatingSuccess?.();
     },
     showSuccessNotification: false,
   });

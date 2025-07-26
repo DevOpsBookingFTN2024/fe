@@ -27,7 +27,7 @@ const BCrumb = [
 export default function AccommodationDetailsPage() {
   const { user } = useAuthStore();
   const { accommodationId } = useParams();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ["accommodation_details", accommodationId],
     queryFn: () => getAccommodationById(accommodationId ?? ""),
   });
@@ -88,7 +88,7 @@ export default function AccommodationDetailsPage() {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} lg={6}>
-                    <AccommodationDetails item={data} />
+                    <AccommodationDetails item={data} onRatingUpdate={refetch} />
                   </Grid>
                 </Grid>
               </ChildCard>

@@ -25,17 +25,14 @@ const BCrumb = [
 export default function AccommodationAvailabilityPage() {
   const { accommodationId } = useParams();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ["accommodation_details", accommodationId],
     queryFn: () => getAccommodationById(accommodationId ?? ""),
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
-
-  console.log(data?.accommodationDTO.photos?.map(
-                              (photo) =>
-                                `${
-                                  import.meta.env.VITE_ACCOMMODATIONS_API_URL
-                                }photos/${photo.url}`
-                            ))
+  
   return (
     <PageContainer
       title="Accommodation availability"
@@ -72,7 +69,7 @@ export default function AccommodationAvailabilityPage() {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} lg={6}>
-                    <AccommodationDetails item={data} />
+                    <AccommodationDetails item={data} onRatingUpdate={refetch} />
                   </Grid>
                 </Grid>
               </ChildCard>

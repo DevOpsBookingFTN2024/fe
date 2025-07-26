@@ -38,10 +38,13 @@ const AvailabilityCalendarV2 = ({ pricingStrategy }: AvailabilityCalendarV2Props
 
   const { accommodationId } = useParams();
   const { data: availabilities } = useQuery({
-    queryKey: ["availabilities"],
+    queryKey: ["availabilities", accommodationId],
     queryFn: async () => {
       return getAvailabilitiesByAccommodation(accommodationId ?? "");
     },
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
   const processedEvents = availabilities?.map((event) => {
     const startDate = new Date(event.date);
