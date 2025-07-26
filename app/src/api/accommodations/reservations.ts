@@ -46,6 +46,7 @@ export type Reservation = {
   numberOfGuests: number;
   totalPrice: number;
   reservationStatus: ReservationStatus;
+  canceledReservations : number;
 };
 
 export type HasSuccessfullyPassedDTO = {

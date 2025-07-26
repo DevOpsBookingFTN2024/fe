@@ -123,11 +123,8 @@ export default function LayoutAuth() {
   };
 
   const handleLogout = () => {
-    {
-      deleteUser();
-      localStorage.removeItem(USER_KEY);
-      sessionStorage.removeItem(USER_KEY);
-    }
+    // deleteUser() now handles clearing both storages
+    deleteUser();
   };
 
   useEffect(() => {

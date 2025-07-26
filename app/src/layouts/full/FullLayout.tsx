@@ -2,7 +2,7 @@ import { Box, Container, styled, useTheme } from "@mui/material";
 import useAuthStore from "@stores/authStore";
 import ScrollToTop from "@ui/shared/ScrollToTop";
 import { FC, useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import Header from "./vertical/header/Header";
 import Sidebar from "./vertical/sidebar/Sidebar";
 
@@ -37,15 +37,10 @@ const FullLayout: FC = () => {
 
   const { isValid, user } = useAuthStore((state) => state);
 
-  // useEffect(() => {
-  //   if (isOpen) {
-  //     setTimeout(() => closeNotification(), 3000);
-  //   }
-  // }, [isOpen]);
-
-  // if (!isValid) {
-  //   return <Navigate to={"/login"} replace={true} />;
-  // }
+  // Check authentication - redirect to login if not valid
+  if (!isValid) {
+    return <Navigate to={"/login"} replace={true} />;
+  }
 
   useEffect(() => {
     if (isConnected) {

@@ -1,6 +1,7 @@
 import { Reservation } from "@api/accommodations/reservations";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
+import CancelIcon from "@mui/icons-material/Cancel";
 import {
   Box,
   Button,
@@ -154,6 +155,12 @@ const ReservationsList = ({
                 <PeopleOutlineIcon sx={{ mr: 1 }} />
                 {reservation.numberOfGuests}
               </Typography>
+              {(type === "PENDING" || type === "APPROVAL") && reservation.canceledReservations > 0 && (
+                <Typography variant="body2" display="flex" alignItems="center" color="error.main" mt={1}>
+                  <CancelIcon sx={{ mr: 1, fontSize: 16 }} />
+                  {reservation.canceledReservations} cancelled reservation{reservation.canceledReservations !== 1 ? 's' : ''}
+                </Typography>
+              )}
               <Typography mt={1} variant="h5" fontWeight={600}>
                 Total: ${reservation.totalPrice.toFixed(2)}
               </Typography>

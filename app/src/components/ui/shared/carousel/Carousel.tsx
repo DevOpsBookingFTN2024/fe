@@ -18,7 +18,12 @@ const Carousel = ({ images }: AddressCarouselProps) => {
   const slider2 = useRef();
   const landingImage = images && images.length > 0 ? images[0] : undefined;
 
+  console.log('Carousel render - images:', images);
+  console.log('Carousel render - landingImage:', landingImage);
+
   useEffect(() => {
+    console.log('Carousel useEffect - slider1.current:', slider1.current);
+    console.log('Carousel useEffect - slider2.current:', slider2.current);
     setState({
       nav1: slider1.current,
       nav2: slider2.current,

@@ -116,6 +116,8 @@ export default function LoginPage() {
 
     // Save user data and navigate
     currentUserResponse.token = token;
+    // Save to both localStorage and sessionStorage for cross-tab persistence
+    localStorage.setItem(USER_KEY, JSON.stringify(currentUserResponse));
     sessionStorage.setItem(USER_KEY, JSON.stringify(currentUserResponse));
     setUser(currentUserResponse);
 

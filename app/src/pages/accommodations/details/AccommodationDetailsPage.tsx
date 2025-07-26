@@ -35,6 +35,13 @@ export default function AccommodationDetailsPage() {
   const { filter } = useAccommodationFilterStore();
   const [isCreateReservationOpen, setIsCreateReservationOpen] = useState(false);
 
+  console.log(
+    data?.accommodationDTO.photos?.map(
+      (photo) =>
+        `${import.meta.env.VITE_ACCOMMODATIONS_API_URL}photos/${photo.url}`
+    )
+  );
+
   return (
     <PageContainer
       title="Accommodation details"
